@@ -1,0 +1,13 @@
+
+cocosstudio/
+proj.android/
+cocosstudio/
+proj.ios_mac/
+proj.win32/Debug.win32/
+chess.udf
+chess.cfg
+chess.ccs
+.cocos-project.json
+config.json
+proj.win32/res/game.ico
+proj.win32/chess.sdf
