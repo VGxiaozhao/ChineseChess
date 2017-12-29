@@ -20,13 +20,16 @@ public:
 	Move makeRevMove(Move m);
 	int alphaBetaSearch(int turn, int depth, int alpha, int beta);
 	Move fuck();
+	bool isGameOver(bool turn);
+	void evaluate(int& myturn,int& yourturn);
 private:
 	Stone* _s[32];
 	bool _turn;
 	bool _redSide;
 	int _xulie[32];
-	int _best, _worst;
+	int _best, _worst, _depth;
 	Move _bestMove;
+	int _myturn, _yourturn;
 };
 
 

@@ -278,7 +278,7 @@ void SceneGame::moveStone(int moveId, int killId, int x, int y)
         return;
     }
     //走棋规则 
-    bool bCanMove =  SRule::canMove(moveId, killId, x, y, _s, _redSide);
+    bool bCanMove =  SRule::canMove(moveId, killId, x, y, _s);
     //如果bCanMove为false 
     //不能走棋 
     if(false == bCanMove)
