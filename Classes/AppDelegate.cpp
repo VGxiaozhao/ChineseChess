@@ -15,7 +15,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-		glview = GLViewImpl::createWithRect("Ding Ding", Rect(0, 0, 800, 480), 1.0f);
+		glview = GLViewImpl::createWithRect("BetaPick", Rect(0, 0, 800, 480), 1.0f);
         director->setOpenGLView(glview);
     }
     glview->setDesignResolutionSize(800,480,ResolutionPolicy::EXACT_FIT);

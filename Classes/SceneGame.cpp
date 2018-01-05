@@ -474,7 +474,7 @@ void SceneGame::callAI()
 			kred = !mred;
 	} while (!SRule::canMove(mid, kid, x, y, _s, _redSide));
 	moveStone(mid, kid, x, y);*/
-	CBrain b(_redTurn, _s, _redSide);
+	CBrain b(_redTurn, _s);
 	moveStone(b.think());
 }
 
