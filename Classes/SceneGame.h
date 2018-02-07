@@ -51,6 +51,8 @@ public:
     //当玩家选中红棋时，玩家持红棋 
     //当玩家选中黑棋时，玩家持黑棋 
     static SceneGame*  create(bool red);
+	//大脑
+	CBrain _brain;
     //棋盘的偏移量 
     Point _plateOffset;
     //棋子的偏移量 

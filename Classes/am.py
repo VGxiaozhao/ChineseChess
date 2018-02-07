@@ -1,12 +1,45 @@
-import cPickle
-import gzip
-import random
-import qipu, qipu2
+﻿import random
 # Third-party libraries
 import numpy as np
-import signal, time, sys
-import pickle, os
+import pickle
 import threading
+import copy
+import heapq
+
+initPad = [
+['Ju', 8, 9 ],
+['Ma', 7, 9 ],
+['Xiang', 6, 9 ],
+['Shi', 5, 9 ],
+['Jiang', 4, 9 ],
+['Shi', 3, 9 ],
+['Xiang', 2, 9 ],
+['Ma', 1, 9 ],
+['Ju', 0, 9 ],
+['Pao', 7, 7 ],
+['Pao', 1, 7 ],
+['Bing', 8, 6 ],
+['Bing', 6, 6 ],
+['Bing', 4, 6 ],
+['Bing', 2, 6 ],
+['Bing', 0, 6 ],
+['Ju', 0, 0 ],
+['Ma', 1, 0 ],
+['Xiang', 2, 0 ],
+['Shi', 3, 0 ],
+['Jiang', 4, 0 ],
+['Shi', 5, 0 ],
+['Xiang', 6, 0 ],
+['Ma', 7, 0 ],
+['Ju', 8, 0 ],
+['Pao', 1, 2 ],
+['Pao', 7, 2 ],
+['Bing', 0, 3 ],
+['Bing', 2, 3 ],
+['Bing', 4, 3 ],
+['Bing', 6, 3 ],
+['Bing', 8, 3 ]
+]
 
 class Network(object):
 	
@@ -128,7 +161,7 @@ class Network(object):
 		"""Return the vector of partial derivatives \partial C_x /
 		\partial a for the output activations."""
 		return (output_activations-y)
-
+		
 #### Miscellaneous functions
 def sigmoid(z):
 	"""The sigmoid function."""
@@ -138,34 +171,32 @@ def sigmoid_prime(z):
 	"""Derivative of the sigmoid function."""
 	return sigmoid(z)*(1-sigmoid(z))
 	
-sizes = [2880, 300, 1440]
-net = Network(sizes)
-xdir = 'd:/net_bw100x100/'
-if not os.path.exists(xdir):
-	os.path.mkdirs(xdir)
-#net = Network(sizes, dir=xdir)
+def vectorize(lst, dead):
+	ret = np.zeros((90*32,1))
+	lei = 0
+	for i in range(len(lst)):
+		if not dead[i]:
+			tmp = lei + lst[i][1] + lst[i][2] * 9
+			ret[tmp] = 1.0
+		lei += 90
+	return ret;
 
-def CtrlCHandler(signum, frame):
-	net.dump(xdir)
-		
-signal.signal(signal.SIGINT, CtrlCHandler)
+def fun(line, n):
+	#sizes = [2880, 50, 50, 16, 1440]
+	sizes = [2880, 100, 100, 1440]
+	net = Network(sizes, dir='d:/net_bw100x100/')
+	lst = copy.deepcopy(initPad)
+	dead = [0 for i in range(0,32)]
+	for j in range(0, len(line), 2):
+		if j+1<len(line):
+			x = ord(line[j]) - ord('0')
+			y = ord(line[j+1]) - ord('0')
+			lst[j/2][1] = x
+			lst[j/2][2] = y
+			if x==9 and y==9:
+				dead[j/2] = 1
+	a = vectorize(lst, dead)
+	vec = net.feedforward(a)
+	z = heapq.nlargest(n, range(len(vec)), vec.take)
+	return z[-1]
 
-def fun_timer():
-	print 'write to hard disk'
-	net.dump(xdir)
-	global timer
-	timer = threading.Timer(300, fun_timer)
-	timer.start()
-
-timer = threading.Timer(300, fun_timer)
-timer.start()
-
-if __name__ == '__main__':
-	test_data = qipu2.getTestData('D:/qipu_dp/_%d.txt', 81750,82000)
-	while True:
-		for i in range(1,78000,50):
-			print 'this is',
-			print sizes,
-			print 'on training %d...'%i
-			training_data = qipu2.getTrainData('D:/qipu_xqd/_%d.txt', i,i+49)
-			net.SGD(training_data, 30, 10, 0.05, test_data=test_data)

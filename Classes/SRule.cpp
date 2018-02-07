@@ -465,15 +465,13 @@ list<Move> SRule::listMove(int mid, Stone* _s[])
 	}
 	list<Move> xret; xret.clear();
 	for (auto m : ret){
-		if (m.killid != -1)
-			xret.push_back(m);
-	}
-	for (auto m : ret){
 		if (m.killid == -1)
 		{
-			if (isValidMove(m,_s))
+			//if (isValidMove(m, _s))
 				xret.push_back(m);
 		}
+		else
+			xret.push_front(m);
 	}
 	return xret;
 }
@@ -488,8 +486,10 @@ bool SRule::isValidMove(Move e, Stone* _s[])
 		{
 			if (canMove(i, -1, e.x, e.y, _s))
 			{
-				if (_s[i]->getRed() == _s[e.moveid]->getRed())
+				if (_s[i]->getRed() == _s[e.moveid]->getRed() && _s[i]->getScore() >= _s[e.moveid]->getScore())
 					return true;
+				else if (_s[i]->getRed() != _s[e.moveid]->getRed() && _s[i]->getScore() < _s[e.moveid]->getScore())
+					return false;
 				else
 					danger = true;
 			}

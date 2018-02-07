@@ -15,3 +15,11 @@ proj.win32/chess.opensdf
 proj.win32/chess.v12.suo
 proj.win32/chess.v12.suo
 *.pyc
+*.lib
+*.obj
+*.dll
+*.tlog
+*.log
+*.pdb
+*.res
+proj.win32/HashMap.h

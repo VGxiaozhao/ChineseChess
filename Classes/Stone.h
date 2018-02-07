@@ -50,6 +50,7 @@ public:
        Stone::TYPE _type;
 	}_initPos[16];
 	int getScore();
+	int _score;
     //
 	CC_SYNTHESIZE(TYPE, _type, Type)
 	//棋子的位置(坐标) 

@@ -103,6 +103,7 @@ bool SceneGame::init(bool red)
     menu->addChild(itemStart);
     itemStart->setPositionX(190);
     itemStart->setPositionY(120);
+Start(NULL);
     //创建新局按钮 
     auto itemNew = MenuItemImage::create("new.jpg", "new.jpg", this, menu_selector(SceneGame::New));
     menu->addChild(itemNew);
@@ -474,7 +475,7 @@ void SceneGame::callAI()
 			kred = !mred;
 	} while (!SRule::canMove(mid, kid, x, y, _s, _redSide));
 	moveStone(mid, kid, x, y);*/
-	CBrain b(_redTurn, _s);
-	moveStone(b.think());
+	_brain.setPad(_s, _redTurn);
+	moveStone(_brain.think());
 }
 

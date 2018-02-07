@@ -106,7 +106,23 @@ bool Stone::init(int id, bool red)
     //摆棋子(设置棋子的位置) 
     reset(red);
 
-    return true;
+	int type = this->getType();
+	if (type == Stone::JIANG)
+		_score = 1000;
+	else if (type == Stone::BING)
+		_score = 2;
+	else if (type == Stone::JU)
+		_score = 18;
+	else if (type == Stone::PAO)
+		_score = 9;
+	else if (type == Stone::MA)
+		_score = 8;
+	else if (type == Stone::SHI)
+		_score = 4;
+	else if (type == Stone::XIANG)
+		_score = 4;
+
+	return true;
 }
 
 //创建一张表 
@@ -148,19 +164,5 @@ Stone::InitPos Stone::_initPos[16] =
 
 int Stone::getScore()
 {
-	int type = this->getType();
-	if (type == Stone::JIANG)
-		return 1000;
-	else if (type == Stone::BING)
-		return 2;
-	else if (type == Stone::JU)
-		return 18;
-	else if (type == Stone::PAO)
-		return 9;
-	else if (type == Stone::MA)
-		return 8;
-	else if (type == Stone::SHI)
-		return 4;
-	else if (type == Stone::XIANG)
-		return 4;
+	return _score;
 }

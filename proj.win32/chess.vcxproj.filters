@@ -36,6 +36,9 @@
     <ClCompile Include="..\Classes\Brain.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\HashMap.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -65,10 +68,18 @@
     <ClInclude Include="..\Classes\Brain.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\HashMap.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">
       <Filter>resource</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Classes\am.py">
+      <Filter>src</Filter>
+    </None>
   </ItemGroup>
 </Project>

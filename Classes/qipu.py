@@ -255,30 +255,12 @@ def vectorize(lst, dead):
 		lei += 90
 	return ret;
 	
-def deltavec(st, ed):
-	ret = np.zeros(st.shape)
-	for i in range(0, 90*32):
-		if ed[i]>0.5 and st[i]<0.5:
-			ret[i]=1.0
-			return ret
-	return ret
-	
 def readOp(str, Red, lst, dead):
 	id = getStone(str[0], str[1], str[2], str[3], Red, lst, dead)
 	if (str[0] == '前' or str[0] == '后'):
 		movStone(id, str[1], str[2], str[3], Red, lst, dead)
 	else:
 		movStone(id, str[0], str[2], str[3], Red, lst, dead)
-	
-btest = 1
-if not btest:
-	lst = [['Ju', 2, 9], ['Ma', 2, 2], ['Xiang', 4, 2], ['Shi', 4, 3], ['Jiang', 3, 0], ['Shi', 5, 0], ['Xiang', 0, 2], ['Ma', 1, 5], ['Ju', 7, 9], ['Pao', 0, 4], ['Pao', 4, 7], ['Bing', 2, 6], ['Bing', 3, 8], ['Bing', 4, 5], ['Bing', 6, 3], ['Bing', 8, 3], ['Ju', 7, 9], ['Ma', 4, 4], ['Xiang', 2, 5], ['Shi', 4, 8], ['Jiang', 5, 9], ['Shi', 3, 7], ['Xiang', 4, 7], ['Ma', 5, 6], ['Ju', 2, 9], ['Pao', 2, 2], ['Pao', 4, 7], ['Bing', 5, 3], ['Bing', 6, 3], ['Bing', 4, 5], ['Bing', 2, 6], ['Bing', 0, 6]]
-	dead = [1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1]
-	print len(dead)
-	str = '相九退七'.decode('utf-8')
-	readOp(str, True, lst, dead)
-	print lst
-	print dead
 
 def outPut(data):
 	with open("d:/test.txt", 'w' ) as cout:
@@ -309,73 +291,47 @@ def vec2pad(vec):
 			'''
 		idx += 1
 	return ret
+
+def deltavec(st, ed):
+	ret = np.zeros(st.shape)
+	for i in range(0, 90*32):
+		if ed[i]>0.5 and st[i]<0.5:
+			ret[i]=1.0
+			return ret
+	return ret
 	
-if __name__ == '__main__' and btest:
+def deltavec1440(st, ed):
+	ret = np.zeros((1440,1))
+	for i in range(1440, 90*32):
+		if ed[i]>0.5 and st[i]<0.5:
+			ret[i-1440]=1.0
+			return ret
+	return ret
+	
+def getTrainData(st,ed):
 	data = []
-	for i in range(1,12001):
-		with open('D:/qipu_xqbase/_%d.txt'%i,'r') as f:
-			dead = [0 for x in range(32)]
+	for filetag in range(st, ed+1):
+		with open('D:/qipu_xqbase/_%d.txt'%filetag,'r') as f:
+			dead = [0 for i in range(32)]
 			lst = copy.deepcopy(initPad)
-			st, ed = np.zeros((3,1)) , np.zeros((3,1))
+			st, ed = np.zeros((3,1)), np.zeros((3,1))
 			for line in f:
 				str = strQ2B(line.decode('utf-8')).split('.')[1].strip(' ')
 				st = vectorize(lst, dead)
-				"""
-				print lst
-				print dead
-				print str.split(' ')[0]
-				"""
 				readOp(str.split(' ')[0], True, lst, dead)
 				ed = vectorize(lst, dead)
 				#data.append( (st, deltavec(st,ed)) )
 				st = ed 
 				if len(str)>6:
-					"""
-					print lst
-					print dead
-					print str.split(' ')[1]
-					"""
 					readOp(str.split(' ')[1], False, lst, dead)
 					ed = vectorize(lst, dead)
-					#data.append( (st, deltavec(st,ed)) )
-					st = ed 
-		print "ok %d"%i
-	'''	
-	for i in range(32):
-		if dead[i]:
-			continue
-		print lst[i]
-	print '' 
-	vec2pad(data[-1][0])
-	print '' 
-	vec2pad(data[-1][1])
-	outPut(data)
-	'''
-
-def getTrainData(st,ed):
-	data = []
-	for filetag in range(st, ed):
-		with open('D:/qipu_xqbase/_%d.txt'%filetag,'r') as f:
-			dead = [0 for i in range(32)]
-			lst = copy.deepcopy(initPad)
-			st, ed = np.zeros((3,1)), np.zeros((3,1))
-			for line in f:
-				str = strQ2B(line.decode('utf-8')).split('.')[1].strip(' ')
-				st = vectorize(lst, dead)
-				readOp(str.split(' ')[0], True, lst, dead)
-				ed = vectorize(lst, dead)
-				data.append( (st, deltavec(st,ed)) )
-				st = ed 
-				if len(str)>6:
-					readOp(str.split(' ')[1], False, lst, dead)
-					ed = vectorize(lst, dead)
-					data.append( (st, deltavec(st,ed)) )
+					data.append( (st, deltavec1440(st,ed)) )
 					st = ed 
 	return data
 	
 def getTestData(st,ed):
 	data = []
-	for filetag in range(st, ed):
+	for filetag in range(st, ed+1):
 		with open('D:/qipu_xqbase/_%d.txt'%filetag,'r') as f:
 			dead = [0 for i in range(32)]
 			lst = copy.deepcopy(initPad)
@@ -385,59 +341,12 @@ def getTestData(st,ed):
 				st = vectorize(lst, dead)
 				readOp(str.split(' ')[0], True, lst, dead)
 				ed = vectorize(lst, dead)
-				data.append( (st, np.argmax(deltavec(st,ed))) )
+				#data.append( (st, np.argmax(deltavec(st,ed))) )
 				st = ed 
 				if len(str)>6:
 					readOp(str.split(' ')[1], False, lst, dead)
 					ed = vectorize(lst, dead)
-					data.append( (st, np.argmax(deltavec(st,ed))) )
+					data.append( (st, np.argmax(deltavec1440(st,ed))) )
 					st = ed 
 	return data
 	
-def getTrainData1(st,ed):
-	data = []
-	for filetag in range(st, ed):
-		with open('D:/qipu_xqbase/_%d.txt'%filetag,'r') as f:
-			dead = [0 for i in range(32)]
-			lst = copy.deepcopy(initPad)
-			st, ed = np.zeros((3,1)), np.zeros((3,1))
-			for line in f:
-				str = strQ2B(line.decode('utf-8')).split('.')[1].strip(' ')
-				st = vectorize(lst, dead)
-				readOp(str.split(' ')[0], True, lst, dead)
-				ed = vectorize(lst, dead)
-				outvec = np.zeros((16,1))
-				tmp = np.argmax(deltavec(st,ed))/90
-				outvec[tmp] = 1.0
-				data.append( (st, outvec) )
-				st = ed 
-				if len(str)>6:
-					readOp(str.split(' ')[1], False, lst, dead)
-					ed = vectorize(lst, dead)
-					outvec = np.zeros((32,1))
-					tmp = np.argmax(deltavec(st,ed))/90
-					outvec[tmp] = 1.0
-					#data.append( (st, outvec) )
-					st = ed 
-	return data
-	
-def getTestData1(st,ed):
-	data = []
-	for filetag in range(st, ed):
-		with open('D:/qipu_xqbase/_%d.txt'%filetag,'r') as f:
-			dead = [0 for i in range(32)]
-			lst = copy.deepcopy(initPad)
-			st, ed = np.zeros((3,1)), np.zeros((3,1))
-			for line in f:
-				str = strQ2B(line.decode('utf-8')).split('.')[1].strip(' ')
-				st = vectorize(lst, dead)
-				readOp(str.split(' ')[0], True, lst, dead)
-				ed = vectorize(lst, dead)
-				data.append( (st, np.argmax(deltavec(st,ed))/90) )
-				st = ed 
-				if len(str)>6:
-					readOp(str.split(' ')[1], False, lst, dead)
-					ed = vectorize(lst, dead)
-					#data.append( (st, np.argmax(deltavec(st,ed))/90) )
-					st = ed 
-	return data
