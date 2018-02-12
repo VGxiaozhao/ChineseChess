@@ -100,8 +100,8 @@ def getFuckingAccuracy():
 	sum /= ss
 	return sum
 	
-first_step = 554943
-while True:
+first_step = 1
+for _ in range(3):
 	step = 1
 	i = 1
 	if first_step != -1:

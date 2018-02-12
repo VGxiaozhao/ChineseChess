@@ -1,5 +1,6 @@
 #include "SceneGame.h"
 #include "SRule.h"
+#include <thread>
 SceneGame::SceneGame()
 {
 }
@@ -279,7 +280,12 @@ void SceneGame::moveStone(int moveId, int killId, int x, int y)
         return;
     }
     //走棋规则 
-    bool bCanMove =  SRule::canMove(moveId, killId, x, y, _s);
+	stChessman arr[32];
+	for (int i = 0; i < 32; i++)
+	{
+		arr[i] = *_s[i];
+	}
+    bool bCanMove =  SRule::canMove(moveId, killId, x, y, arr);
     //如果bCanMove为false 
     //不能走棋 
     if(false == bCanMove)
@@ -302,7 +308,7 @@ void SceneGame::moveStone(int moveId, int killId, int x, int y)
     //_s[moveId]->setPosition(getStonePos(x,y));
     //SetRealPos(_s[moveId]);
     //设置移动棋子时的动作 
-    auto move = MoveTo::create(.5f, getStonePos(x, y));
+    auto move = MoveTo::create(.2f, getStonePos(x, y));
     //动作回调 
     auto call = CCCallFuncND::create(this, callfuncND_selector(SceneGame::moveComplete), (void*)(intptr_t)killId);
     //设置动作的执行顺序(先移动棋子,后调用回调函数) 
@@ -450,7 +456,11 @@ void SceneGame::moveComplete(Node* movestone, void* _killid)
     //切换移动的棋子的颜色 
     _redTurn = ! _redTurn;
 	if (!_redTurn)
-		callAI();
+	{
+		//callAI();
+		std::thread t1(&SceneGame::callAI, this);
+		t1.detach();
+	}
 }
 
 void SceneGame::moveStone(Move m)

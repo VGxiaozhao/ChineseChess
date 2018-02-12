@@ -262,6 +262,7 @@ xcopy /Y /Q "$(COCOS_FRAMEWORKS)\cocos2d-x-3.9\prebuilt\win32\*.*" "$(OutDir)"
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="..\Classes\Board.cpp" />
     <ClCompile Include="..\Classes\Brain.cpp" />
     <ClCompile Include="..\Classes\HashMap.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
@@ -274,6 +275,7 @@ xcopy /Y /Q "$(COCOS_FRAMEWORKS)\cocos2d-x-3.9\prebuilt\win32\*.*" "$(OutDir)"
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\AppMacros.h" />
+    <ClInclude Include="..\Classes\Board.h" />
     <ClInclude Include="..\Classes\Brain.h" />
     <ClInclude Include="..\Classes\HashMap.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />

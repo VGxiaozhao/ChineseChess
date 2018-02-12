@@ -34,6 +34,10 @@ public:
     Stone();
     //棋子的类型:兵、士、相、马、炮、车、 将
     enum TYPE { BING, SHI, XIANG, MA, PAO, JU, JIANG};
+	//活动范围
+	enum LOC {CENTER, SIDELINE, CONER};
+	//局势
+	enum SIT {OPEN, MIDDLE, MESS};
     //创建棋子 
     //第一个参数：棋子的类型 
     //第二个参数：棋子的颜色 
@@ -62,6 +66,9 @@ public:
 	CC_SYNTHESIZE(bool, _dead, Dead)
 	//判断棋子的颜色 
 	CC_SYNTHESIZE(bool, _red, Red)
+	int getLoc();
+private:
+	int calculate(Stone::TYPE );
 };
 
 #endif

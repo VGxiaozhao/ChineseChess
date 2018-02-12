@@ -4,6 +4,7 @@
 #include "Stone.h"
 #include "cocos2d.h"
 #include <string>
+#include "Board.h"
 #include "HashMap.h"
 
 class CBrain
@@ -18,7 +19,7 @@ public:
 	void reverseMove(Move m);
 	Move makeRevMove(Move m);
 	bool isGameOver();
-	int  alphaBetaSearch(bool turn, int depth, int alpha, int beta, int a[]);
+	int  alphaBetaSearch(bool turn, int depth, int alpha, int beta);
 	void alphaBetaSearch();
 	std::string getCurJu();
 	unsigned long long getJuMianLL();
@@ -29,9 +30,7 @@ public:
 	int evaluate(bool);
 	int evaluate(int);
 private:
-	Stone* _s[32];
 	bool _turn;
-	bool _redSide;
 	int _xulie[32];
 	int _depth;
 	Move _bestMove;
@@ -39,7 +38,7 @@ private:
 	int _hashcnt;
 	int _firstScore;
 	CHashMap *mp[6];
-	Stone before[32];
+	CBoard* _board;
 };
 
 

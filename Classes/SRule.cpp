@@ -10,26 +10,26 @@ SRule::~SRule()
 }
 
 //走棋规则 
-bool SRule::canMove(int moveid, int killid, int x, int y, Stone* _s[])
+bool SRule::canMove(int moveid, int killid, int x, int y, stChessman* _s)
 {
 	//获得选中的棋子 
-	Stone* s = _s[moveid];
+	stChessman s = _s[moveid];
 	//死子不可移动
-	if (s->getDead())
+	if (s.getDead())
 		return false;
 	//同色不可吃
 	if (killid != -1)
 	{
-		int mred = s->getRed();
-		int kred = _s[killid]->getRed();
+		int mred = s.getRed();
+		int kred = _s[killid].getRed();
 		if (mred == kred)
 			return false;
 	}
 	//同位无需走
-	if (_s[moveid]->getX() == x && _s[moveid]->getY() == y)
+	if (_s[moveid].getX() == x && _s[moveid].getY() == y)
 		return false;
 	//棋子的类型 
-	switch (s->getType())
+	switch (s.getType())
 	{
 		//将的走棋规则 
 	case Stone::JIANG:
@@ -81,25 +81,25 @@ bool SRule::canMove(int moveid, int killid, int x, int y, Stone* _s[])
 }
 
 //将的走棋规则 
-bool SRule::canMoveJiang(int moveid, int killid, int x, int y, Stone* _s[])
+bool SRule::canMoveJiang(int moveid, int killid, int x, int y, stChessman* _s)
 {
 	if (killid > -1){
-		Stone* skill = _s[killid];
+		stChessman skill = _s[killid];
 		//将的走棋规则：
 		//1、一次走一格 
 		//2、不能出九宫格 
 
 		//将的对杀 
-		if (skill->getType() == Stone::JIANG)
+		if (skill.getType() == Stone::JIANG)
 		{
 			return canMoveJu(moveid, x, y, _s);
 		}
 	}
 	//通过棋子的ID得到棋子 
-	Stone* s = _s[moveid];
+	stChessman s = _s[moveid];
 	//获得将当前的位置 
-	int xo = s->getX();
-	int yo = s->getY();
+	int xo = s.getX();
+	int yo = s.getY();
 	//获得将走的格数 
 	//(x,y)表示将走到的位置 
 	int xoff = abs(xo - x);
@@ -127,7 +127,7 @@ bool SRule::canMoveJiang(int moveid, int killid, int x, int y, Stone* _s[])
 
 
 //士的走棋规则 
-bool SRule::canMoveShi(int moveid, int x, int y, Stone* _s[])
+bool SRule::canMoveShi(int moveid, int x, int y, stChessman* _s)
 {
 	//士的走棋规则：
 	//1、一次走一格 
@@ -135,10 +135,10 @@ bool SRule::canMoveShi(int moveid, int x, int y, Stone* _s[])
 	//3、斜着走 
 	// 
 	//通过棋子的ID得到棋子 
-	Stone* s = _s[moveid];
+	stChessman s = _s[moveid];
 	//获得相走棋前的位置 
-	int xo = s->getX();
-	int yo = s->getY();
+	int xo = s.getX();
+	int yo = s.getY();
 	//获得相走的格数 
 	//(x,y)表示将走到的位置 
 	int xoff = abs(xo - x);
@@ -167,17 +167,17 @@ bool SRule::canMoveShi(int moveid, int x, int y, Stone* _s[])
 }
 
 //相的走棋规则 
-bool SRule::canMoveXiang(int moveid, int x, int y, Stone* _s[])
+bool SRule::canMoveXiang(int moveid, int x, int y, stChessman* _s)
 {
 	//相的走棋规则： 
 	//每走一次x移动2格,y移动2格 
 	//不能过河 
 	// 
 	//通过棋子的ID得到棋子 
-	Stone* s = _s[moveid];
+	stChessman s = _s[moveid];
 	//获得相走棋前的位置 
-	int xo = s->getX();
-	int yo = s->getY();
+	int xo = s.getX();
+	int yo = s.getY();
 	//获得相走的格数 
 	//(x,y)表示将走到的位置 
 	int xoff = abs(xo - x);
@@ -217,13 +217,13 @@ bool SRule::canMoveXiang(int moveid, int x, int y, Stone* _s[])
 }
 
 //车的走棋规则 
-bool SRule::canMoveJu(int moveid, int x, int y, Stone* _s[])
+bool SRule::canMoveJu(int moveid, int x, int y, stChessman* _s)
 {
 	//通过棋子的ID得到棋子 
-	Stone* s = _s[moveid];
+	stChessman s = _s[moveid];
 	//获得车走棋前的位置 
-	int xo = s->getX();
-	int yo = s->getY();
+	int xo = s.getX();
+	int yo = s.getY();
 	//当两点之间有棋子的时候车不能走 
 	if (getStoneCount(xo, yo, x, y, _s) != 0)
 	{
@@ -233,13 +233,13 @@ bool SRule::canMoveJu(int moveid, int x, int y, Stone* _s[])
 }
 
 //马的走棋规则 
-bool SRule::canMoveMa(int moveid, int x, int y, Stone* _s[])
+bool SRule::canMoveMa(int moveid, int x, int y, stChessman* _s)
 {
 	//通过棋子的ID得到棋子 
-	Stone* s = _s[moveid];
+	stChessman s = _s[moveid];
 	//获得马走棋前的位置 
-	int xo = s->getX();
-	int yo = s->getY();
+	int xo = s.getX();
+	int yo = s.getY();
 	//CCLog("xo=%d", xo);
 	//CCLog("yo=%d", yo);
 	//获得马走的格数 
@@ -279,13 +279,13 @@ bool SRule::canMoveMa(int moveid, int x, int y, Stone* _s[])
 }
 
 //炮的走棋规则 
-bool SRule::canMovePao(int moveid, int killid, int x, int y, Stone* _s[])
+bool SRule::canMovePao(int moveid, int killid, int x, int y, stChessman* _s)
 {
 	//通过棋子的ID得到棋子 
-	Stone* s = _s[moveid];
+	stChessman s = _s[moveid];
 	//获得炮走棋前的位置 
-	int xo = s->getX();
-	int yo = s->getY();
+	int xo = s.getX();
+	int yo = s.getY();
 	//当触摸点上有一个棋子 
 	//而且两点之间只有一个棋子的时候 
 	//炮吃掉触摸点上的棋子 
@@ -301,17 +301,17 @@ bool SRule::canMovePao(int moveid, int killid, int x, int y, Stone* _s[])
 }
 
 //兵的走棋规则 
-bool SRule::canMoveBing(int moveid, int x, int y, Stone* _s[])
+bool SRule::canMoveBing(int moveid, int x, int y, stChessman* _s)
 {
 	//兵的走棋规则： 
 	//1、一次走一格 
 	//2、前进一格后不能后退 
 	//3、过河后才可以左右移动 
 	//通过棋子的ID得到棋子 
-	Stone* s = _s[moveid];
+	stChessman s = _s[moveid];
 	//获得将当前的位置 
-	int xo = s->getX();
-	int yo = s->getY();
+	int xo = s.getX();
+	int yo = s.getY();
 	//获得兵走的格数 
 	//(x,y)表示将走到的位置 
 	int xoff = abs(xo - x);
@@ -356,7 +356,7 @@ bool SRule::canMoveBing(int moveid, int x, int y, Stone* _s[])
 
 //计算(xo,yo)和(x,y)之间的棋子数 
 //如果棋子数为-1,表示(xo,yo)和(x,y)不在一条直线上 
-int SRule::getStoneCount(int xo, int yo, int x, int y, Stone* _s[])
+int SRule::getStoneCount(int xo, int yo, int x, int y, stChessman* _s)
 {
 	int ret = 0;//记录两点之间的棋子的个数 
 	//(xo,yo)和(x,y)不在同一条直线上 
@@ -408,17 +408,17 @@ int SRule::getStoneCount(int xo, int yo, int x, int y, Stone* _s[])
 
 //通过坐标的下标获取棋子的ID 
 //如果坐标上没有棋子,返回-1 
-int SRule::getStone(int x, int y, Stone* _s[])
+int SRule::getStone(int x, int y, stChessman* _s)
 {
-	Stone* s;
+	stChessman s;
 	//遍历32个棋子 
 	for (int i = 0; i<32; i++)
 	{
 		s = _s[i];
-		if (s->getX() == x && s->getY() == y && !s->getDead())
+		if (s.getX() == x && s.getY() == y && !s.getDead())
 		{
 			//得到棋子的ID 
-			return s->getID();
+			return i;
 		}
 	}
 
@@ -426,17 +426,17 @@ int SRule::getStone(int x, int y, Stone* _s[])
 }
 
 
-list<Move> SRule::listMove(int mid, Stone* _s[])
+list<Move> SRule::listMove(int mid, stChessman* _s)
 {
-	Stone* s = _s[mid];
+	stChessman s = _s[mid];
 	list<Move> ret;
 	ret.clear();
-	if (s->getDead())
+	if (s.getDead())
 	{
 		return ret;
 	}
 	//棋子的类型 
-	switch (s->getType())
+	switch (s.getType())
 	{
 		//将的走棋规则 
 		case Stone::BING:
@@ -476,9 +476,9 @@ list<Move> SRule::listMove(int mid, Stone* _s[])
 	return xret;
 }
 
-bool SRule::isValidMove(Move e, Stone* _s[])
+bool SRule::isValidMove(Move e, stChessman* _s)
 {
-	bool turn = _s[e.moveid]->getRed();
+	bool turn = _s[e.moveid].getRed();
 	bool danger = false;
 	for (int i = 0; i < 32; i++)
 	{
@@ -486,9 +486,9 @@ bool SRule::isValidMove(Move e, Stone* _s[])
 		{
 			if (canMove(i, -1, e.x, e.y, _s))
 			{
-				if (_s[i]->getRed() == _s[e.moveid]->getRed() && _s[i]->getScore() >= _s[e.moveid]->getScore())
+				if (_s[i].getRed() == _s[e.moveid].getRed() && _s[i].getScore() >= _s[e.moveid].getScore())
 					return true;
-				else if (_s[i]->getRed() != _s[e.moveid]->getRed() && _s[i]->getScore() < _s[e.moveid]->getScore())
+				else if (_s[i].getRed() != _s[e.moveid].getRed() && _s[i].getScore() < _s[e.moveid].getScore())
 					return false;
 				else
 					danger = true;
@@ -500,11 +500,11 @@ bool SRule::isValidMove(Move e, Stone* _s[])
 	return true;
 }
 
-list<Move> SRule::listMovePao(int mid, Stone* _s[])
+list<Move> SRule::listMovePao(int mid, stChessman* _s)
 {
 	list<Move> ret; ret.clear();
-	int x = _s[mid]->getX();
-	int y = _s[mid]->getY();
+	int x = _s[mid].getX();
+	int y = _s[mid].getY();
 	for (int d = -9; d <= 9; d++)
 	{
 		int nx = x + d;
@@ -525,11 +525,11 @@ list<Move> SRule::listMovePao(int mid, Stone* _s[])
 	return ret;
 }
 
-list<Move> SRule::listMoveShi(int mid, Stone* _s[])
+list<Move> SRule::listMoveShi(int mid, stChessman* _s)
 {
 	list<Move> ret; ret.clear();
-	int x = _s[mid]->getX();
-	int y = _s[mid]->getY();
+	int x = _s[mid].getX();
+	int y = _s[mid].getY();
 	int dx[] = { -1, -1, 1, 1 };
 	int dy[] = { -1, 1, -1, 1 };
 	for (int d = 0; d < 4; d++)
@@ -546,11 +546,11 @@ list<Move> SRule::listMoveShi(int mid, Stone* _s[])
 	return ret;
 }
 
-list<Move> SRule::listMoveBing(int mid, Stone* _s[])
+list<Move> SRule::listMoveBing(int mid, stChessman* _s)
 {
 	list<Move> ret; ret.clear();
-	int x = _s[mid]->getX();
-	int y = _s[mid]->getY();
+	int x = _s[mid].getX();
+	int y = _s[mid].getY();
 	int dx[] = { 0, -1, 0, 1 };
 	int dy[] = { -1, 0, 1, 0 };
 	for (int d = 0; d < 4; d++)
@@ -567,11 +567,11 @@ list<Move> SRule::listMoveBing(int mid, Stone* _s[])
 	return ret;
 }
 
-list<Move> SRule::listMoveXiang(int mid, Stone* _s[])
+list<Move> SRule::listMoveXiang(int mid, stChessman* _s)
 {
 	list<Move> ret; ret.clear();
-	int x = _s[mid]->getX();
-	int y = _s[mid]->getY();
+	int x = _s[mid].getX();
+	int y = _s[mid].getY();
 	int dx[] = { -2, -2, 2, 2 };
 	int dy[] = { -2, 2, -2, 2 };
 	for (int d = 0; d < 4; d++)
@@ -588,11 +588,11 @@ list<Move> SRule::listMoveXiang(int mid, Stone* _s[])
 	return ret;
 }
 
-list<Move> SRule::listMoveMa(int mid, Stone* _s[])
+list<Move> SRule::listMoveMa(int mid, stChessman* _s)
 {
 	list<Move> ret; ret.clear();
-	int x = _s[mid]->getX();
-	int y = _s[mid]->getY();
+	int x = _s[mid].getX();
+	int y = _s[mid].getY();
 	int dx[] = { -2, -2, -1, -1, 1, 1, 2, 2 };
 	int dy[] = { -1, 1, -2, 2, -2, 2, -1, 1 };
 	for (int d = 0; d < 8; d++)

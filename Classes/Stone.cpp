@@ -105,22 +105,8 @@ bool Stone::init(int id, bool red)
     setScale(.8f);
     //摆棋子(设置棋子的位置) 
     reset(red);
-
-	int type = this->getType();
-	if (type == Stone::JIANG)
-		_score = 1000;
-	else if (type == Stone::BING)
-		_score = 2;
-	else if (type == Stone::JU)
-		_score = 18;
-	else if (type == Stone::PAO)
-		_score = 9;
-	else if (type == Stone::MA)
-		_score = 8;
-	else if (type == Stone::SHI)
-		_score = 4;
-	else if (type == Stone::XIANG)
-		_score = 4;
+	//计算子力分数
+	_score = calculate(this->getType());
 
 	return true;
 }
@@ -164,5 +150,93 @@ Stone::InitPos Stone::_initPos[16] =
 
 int Stone::getScore()
 {
-	return _score;
+	return _score + getLoc();
+}
+
+int Stone::calculate(Stone::TYPE type)
+{
+	int ret = 0;
+	if (type == Stone::JIANG)
+		ret = 1000;
+	else if (type == Stone::BING)
+		ret = 2;
+	else if (type == Stone::JU)
+		ret = 10;
+	else if (type == Stone::PAO)
+		ret = 5;
+	else if (type == Stone::MA)
+		ret = 4;
+	else if (type == Stone::SHI)
+		ret = 2;
+	else if (type == Stone::XIANG)
+		ret = 2;
+	return ret;
+}
+
+int Stone::getLoc()
+{
+	Stone::TYPE type = getType();
+	if (type == Stone::JIANG)
+	{
+		if (_x == 4) return 4;
+		else if (_y == 0 || _y == 2 || _y == 9 || _y == 7)
+			return 3;
+		else
+			return 2;
+	}
+	else if (type == Stone::BING)
+	{
+		if (_x == 0 || _x == 8) return 1;
+		else if (_x >= 3 && _x <= 5) {
+			//注意这里！！
+			if (_y > 4 && getRed() == true)
+				return 3;
+			else if (_y <= 4 && getRed() == false)
+				return 3;
+		}
+		else{
+			if (_y > 4 && getRed() == true)
+				return 2;
+			else if (_y <= 4 && getRed() == false)
+				return 2;
+		}
+	}
+	else if (type == Stone::JU)
+	{
+		if (_x == 0 && (_y == 0 || _y == 9))
+			return 15;
+		else if (_x == 8 && (_y == 0 || _y == 9))
+			return 15;
+		else
+			return 17;
+	}
+	else if (type == Stone::PAO)
+		return 17;
+	else if (type == Stone::MA)
+	{
+		if (_x == 0 || _x == 8)
+		{
+			if (_y<2 || _y>7)
+				return 2;
+			else
+				return 3;
+		}
+		else
+			return 6;
+	}
+	else if (type == Stone::SHI)
+	{
+		if (_x == 4)
+			return 2;
+		else
+			return 1;
+	}
+	else if (type == Stone::XIANG)
+	{
+		if (_x == 4)
+			return 2;
+		else
+			return 1;
+	}
+	return 0;
 }
