@@ -56,16 +56,22 @@ def getScore(id):
 		return 50
 	return 0
 
-def vectorize(lst, dead):
+def vectorize(lst, dead, red=False):
+	if red:
+		rlst, rdead = fanzhuan(lst, dead)
+	else:
+		rlst = copy.deepcopy(lst)
+		rdead = copy.deepcopy(dead)
 	ret = np.zeros((90*32,1))
 	lei = 0
-	for i in range(len(lst)):
+	for i in range(len(rlst)):
 		if not dead[i]:
-			tmp = lei + lst[i][1] + lst[i][2] * 9
-			ret[tmp] = 1.0
+			if rlst[i][1]!=9 or rlst[i][2]!=9:
+				tmp = lei + rlst[i][1]*10 + rlst[i][2]
+				ret[tmp] = 1.0
 		lei += 90
 	return ret;
-
+	
 def outPut(data):
 	with open("d:/test.txt", 'w' ) as cout:
 		for item in data:
@@ -75,27 +81,9 @@ def outPut(data):
 					cout.write(', ')
 				cout.write('\n')
 				
-def vec2pad(vec):
-	ret = []
-	idx = 0
-	for i in vec:
-		if i>0.5:
-			tmp = []
-			w = idx / 90
-			x = (idx%90) % 9
-			y = (idx%90) / 9
-			'''
-			tmp.append[initPad[w][0]]
-			tmp.append[x]
-			tmp.append[y]
-			ret.append(tmp)
-			'''
-		idx += 1
-	return ret
-
 def deltavec(st, ed):
 	ret = np.zeros(st.shape)
-	for i in range(0, 90*32):
+	for i in range(90*32):
 		if ed[i]>0.5 and st[i]<0.5:
 			ret[i]=1.0
 			return ret
@@ -121,13 +109,16 @@ def movStone(x,y,nx,ny,lst,dead):
 			lst[j][1], lst[j][2] = 9,9
 			break
 		j += 1
-	lst[id][1] = nx
-	lst[id][2] = ny
+	try:
+		lst[id][1] = nx
+		lst[id][2] = ny
+	except:
+		print("error at %d"%id)
 	return getScore(flag)
 	
 def deltavec1440(st, ed):
 	ret = np.zeros((1440,1))
-	for i in range(1440, 90*32):
+	for i in range(1440, 2880):
 		if ed[i]>0.5 and st[i]<0.5:
 			ret[i-1440]=1.0
 			return ret
@@ -135,10 +126,10 @@ def deltavec1440(st, ed):
 	
 #主函数用于测试某些棋谱文件是否正常
 if __name__ == '__main__':
-	outfile = 'D:/lisan/_%d.txt'
-	for i in range(1,1078000):
+	outfile = 'D:/qipu_dp/_%d.txt'
+	for i in range(81950,82000):
 		last = i
-		if last%2000==0:
+		if last:
 			print  ('ok in %d'%last)
 			
 		try:
@@ -167,7 +158,25 @@ if __name__ == '__main__':
 			print( last)
 			r = random.randint(1, 78000)
 			os.system('cp D:/qipu_xqd/_%d.txt D:/lisan/_%d.txt'%(r, last))
-		
+
+def fanzhuan(lst, dead):
+	rlst, rdead = [], []
+	for i in range(16,32):
+		rdead.append(dead[i])
+		tmp = [] 
+		tmp.append(lst[i][0])
+		tmp.append(8-lst[i][1])
+		tmp.append(9-lst[i][2])
+		rlst.append(tmp)
+	for i in range(16):
+		rdead.append(dead[i])
+		tmp = [] 
+		tmp.append(lst[i][0])
+		tmp.append(8-lst[i][1])
+		tmp.append(9-lst[i][2])
+		rlst.append(tmp)
+	return rlst, rdead
+			
 def getTrainData(file, sstag, edtag):
 	ret = []
 	outfile = file
@@ -176,7 +185,9 @@ def getTrainData(file, sstag, edtag):
 			lst = copy.deepcopy(initPad)
 			dead = [0 for i in range(32)]
 			row = 1
+			#每一行
 			for line in cin:
+				#有初始行
 				if row==1 and line != '\n':
 					for j in range(0, len(line), 2):
 						if j+1<len(line):
@@ -186,15 +197,20 @@ def getTrainData(file, sstag, edtag):
 							lst[int(j/2)][2] = y
 							if x==9 and y==9:
 								dead[int(j/2)] = 1
+				#棋谱行
 				if row!=1:
+					#红方先行
 					red = 1
 					for j in range(0, len(line), 4):
-						stvec = vectorize(lst, dead)
+						#初始向量
+						stvec = vectorize(lst, dead, red)
+						#移动棋子
 						if j+3<len(line):
 							movStone(line[j], line[j+1], line[j+2], line[j+3], lst, dead)
-						if not red:
-							edvec = vectorize(lst, dead)
-							ret.append((stvec, deltavec1440(stvec, edvec)))
+						#结束向量
+						edvec = vectorize(lst, dead, red)
+						ret.append((stvec, deltavec1440(stvec, edvec)))
+						#红黑交替
 						red = 1-red
 				row += 1
 	return ret

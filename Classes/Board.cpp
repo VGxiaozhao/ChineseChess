@@ -225,8 +225,8 @@ std::list<Move> CBoard::listMove(int mid)
 bool CBoard::isEnemy(int a, int b)
 {
 	if (a == -1 || b == -1) return true;
-	if (a < 15 && b >= 15) return true;
-	if (b < 15 && a >= 15) return true;
+	if (a <= 15 && b > 15) return true;
+	if (b <= 15 && a > 15) return true;
 	return false;
 }
 
@@ -269,13 +269,20 @@ std::list<Move> CBoard::listMoveXiang(int mid)
 	int& y = _s[mid]._y;
 	int dx[] = { -2, -2, 2, 2 };
 	int dy[] = { -2, 2, -2, 2 };
+	int ax[] = { -1, -1, 1, 1 };
+	int ay[] = { -1, 1, -1, 1 };
 	for (int d = 0; d < 4; d++)
 	{
 		int nx = x + dx[d];
 		int ny = y + dy[d];
 		if (nx >= 0 && nx <= 8 && ny >= 0 && ny <= 9 && !isGoOut(mid, nx, ny) && isEnemy(mid, has[nx][ny]))
 		{
-			ret.push_back(Move(mid, has[nx][ny], nx, ny));
+			int xx = x + ax[d];
+			int yy = y + ay[d];
+			if (xx >= 0 && xx <= 8 && yy >= 0 && yy <= 9 && has[xx][yy] == -1)
+			{
+				ret.push_back(Move(mid, has[nx][ny], nx, ny));
+			}
 		}
 	}
 	return ret;
@@ -324,13 +331,14 @@ std::list<Move> CBoard::listMoveJiang(int mid)
 	}
 	//¶ÔÃæĞ¦É±
 	bool down = getJiangDire(mid);
-	int st = 1, ed = 10;
+	int st = 1, ed = 10, step = 1;
 	if (!down)
 	{
-		st = -10;
-		ed = -1;
+		st = -1;
+		ed = -10;
+		step = -1;
 	}
-	for (int d = st; d <=ed; d++)
+	for (int d = st; d <= ed; d += step)
 	{
 		int ny = y + d;
 		if (ny >= 0 && ny <= 9)
