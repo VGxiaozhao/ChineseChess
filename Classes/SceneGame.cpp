@@ -1,5 +1,6 @@
 #include "SceneGame.h"
 #include "SRule.h"
+#include "MonteCarlo.h"
 #include <thread>
 SceneGame::SceneGame()
 {
@@ -457,9 +458,9 @@ void SceneGame::moveComplete(Node* movestone, void* _killid)
     _redTurn = ! _redTurn;
 	if (!_redTurn)
 	{
-		//callAI();
-		std::thread t1(&SceneGame::callAI, this);
-		t1.detach();
+		callAI();
+		/*std::thread t1(&SceneGame::callAI, this);
+		t1.detach();*/
 	}
 }
 
@@ -485,7 +486,13 @@ void SceneGame::callAI()
 			kred = !mred;
 	} while (!SRule::canMove(mid, kid, x, y, _s, _redSide));
 	moveStone(mid, kid, x, y);*/
+	MonteCarlo mc(_s, _redTurn);
+	moveStone(mc.UCTSearch());
+	mc.show();
+	//ÒÔÏÂÎªAlphaBetaËÑË÷
+	/*
 	_brain.setPad(_s, _redTurn);
 	moveStone(_brain.think());
+	*/
 }
 

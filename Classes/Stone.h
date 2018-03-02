@@ -24,6 +24,12 @@ struct Move{
 	void zero(){
 		moveid = killid = x = y = 0;
 	}
+	bool isZero(){
+		if (moveid == 0 && killid == 0 && x == 0 && y == 0)
+			return true;
+		else
+			return false;
+	}
 	int moveid, killid, x, y;
 };
 

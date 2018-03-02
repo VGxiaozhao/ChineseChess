@@ -84,12 +84,12 @@ def data_process(data):
 		y.append(ty)
 	return np.array(x), np.array(y)
 	
-test_data = qipu2.getTrainData('D:/qipu_dp/_%d.txt', 81950,82000)
-test_x,test_y = [],[]
+rtest_x,rtest_y = qipu2.getTrainData('D:/qipu_dp/_%d.txt', 81950,82000)
+test_x, test_y = [], []
 ss = 10
-slice = int(len(test_data)/ss)
-for i in range(0, len(test_data), slice):
-	tmp_x, tmp_y = data_process(test_data[i: i+slice])
+slice = int(len(rtest_x )/ss)
+for i in range(0, len(rtest_x), slice):
+	tmp_x, tmp_y = rtest_x[i: i+slice], rtest_y[i:i+slice]
 	test_x.append(tmp_x)
 	test_y.append(tmp_y)
 
@@ -109,16 +109,20 @@ for _ in range(3):
 		first_step = -1
 		
 	while i<1075000:
-		training_data = qipu2.getTrainData('D:/lisan/_%d.txt', i,i+step-1)
+		tx, ty = qipu2.getTrainData('D:/lisan/_%d.txt', i,i+step-1)
 		if i%100==0:
-			print ('on training %d (len:%d)...'%(i,len(training_data)))
-		if len(training_data)>200 or len(training_data)==0:
+			print ('on training %d...'%i)
+		if len(tx)>300 or len(tx)==0:
 			i+=step
 			continue
-		xs,ys = data_process(training_data)
-		
-		train_step.run(feed_dict={x: xs, y_: ys})
-		
+		st = time.time()
+		train_step.run(feed_dict={x: tx, y_: ty})
+		ed = time.time()
+		'''
+		print(i,end=', ')
+		print(ed-st, end=', ')
+		print('len: %d'%len(tx))
+		'''
 		if i%100==1:
 			print ("test accuracy %g"%getFuckingAccuracy())
 		if i%1000==761:	

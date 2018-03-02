@@ -3,6 +3,7 @@
 #include <string>
 #include <list>
 #include <stack>
+#include <vector>
 #include <string.h>
 
 struct stChessman
@@ -54,32 +55,36 @@ struct stChessman
 	}
 };
 
-
+///棋盘类，具有模拟移动棋子，和生成着法的功能
 class CBoard
 {
 public:
 	CBoard(Stone* s[], bool);
+	CBoard(const CBoard& C);
 	CBoard();
 	~CBoard();
 	void setBoard(Stone* s[], bool);
 	void setBoard(const stChessman s[]);
+	bool getTurn();
 	CBoard& operator=(const CBoard& cmp);
 	void moveStone(Move m);
 	void reverseMove();
 	Move makeRevMove(Move m);
 	std::string getJumianStr();
 	unsigned long long getJumianLL();
-	int evaluate(int, int, bool);
 	int evaluate(bool);
+	int getScore(bool);
+	int initEvaluate();
 	bool isGameOver();
 	void setHas();
 	bool isOnCheck(bool turn);
-	stChessman _s[32];
+
 public:
 	bool isEnemy(int a, int b);
 	bool isGoOut(int mid, int x, int y);
 	bool getJiangDire(int mid);
 	std::list<Move> listMove(int mid);
+	std::vector<Move> listKillMove();
 	std::list<Move> listMoveBing(int mid);
 	std::list<Move> listMoveShi(int mid);
 	std::list<Move> listMovePao(int mid);
@@ -89,11 +94,15 @@ public:
 	void listMoveJu(int mid, int x, int y, int dx, int dy, std::list<Move>& lst);
 	std::list<Move> listMoveJiang(int mid);
 	std::list<Move> listMoveXiang(int mid);
-private:
+private: 
+	//栈用于撤销走法
 	std::stack<int> _x0, _y0, _revive, _id;
+	//记录棋盘上的点是哪个棋子
 	int has[10][10];
 	bool _turn;
 	int _firstScore;
 	void init();
+public:
+	stChessman _s[32];
 };
 

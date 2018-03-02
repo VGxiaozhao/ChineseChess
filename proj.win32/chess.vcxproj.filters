@@ -42,6 +42,9 @@
     <ClCompile Include="..\Classes\Board.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\MonteCarlo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -77,15 +80,13 @@
     <ClInclude Include="..\Classes\Board.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\MonteCarlo.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">
       <Filter>resource</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Classes\am.py">
-      <Filter>src</Filter>
-    </None>
   </ItemGroup>
 </Project>

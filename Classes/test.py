@@ -50,13 +50,11 @@ def getTrainData(file, sstag, edtag):
 					for j in range(0, len(line), 4):
 						#初始向量
 						stvec = qipu2.vectorize(lst, dead, red)
-						#pve(stvec)
 						#移动棋子
 						if j+3<len(line):
 							qipu2.movStone(line[j], line[j+1], line[j+2], line[j+3], lst, dead)
 						#结束向量
 						edvec = qipu2.vectorize(lst, dead, red)
-						#pve(edvec)
 						ret.append((stvec, qipu2.deltavec1440(stvec, edvec)))
 						pve(qipu2.deltavec1440(stvec, edvec))
 						#红黑交替

@@ -132,7 +132,7 @@ def getFuckingAccuracy():
 	sum /= ss
 	return sum
 	
-first_step = 1
+first_step = 8000
 for _ in range(3):
 	print("start fucking train")
 	step = 1

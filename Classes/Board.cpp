@@ -12,6 +12,24 @@ CBoard::CBoard()
 	init();
 }
 
+CBoard::CBoard(const CBoard& cmp)
+{
+	init();
+	setBoard(cmp._s);
+	_turn = cmp._turn;
+}
+
+CBoard::~CBoard()
+{
+}
+
+CBoard& CBoard::operator=(const CBoard& cmp)
+{
+	setBoard(cmp._s);
+	_turn = cmp._turn;
+	return *this;
+}
+
 void CBoard::init()
 {
 	while (!_x0.empty()) _x0.pop();
@@ -32,17 +50,6 @@ void CBoard::setBoard(const stChessman s[])
 {
 	for (int i = 0; i < 32; i++)
 		_s[i] = s[i];
-}
-
-CBoard::~CBoard()
-{
-}
-
-CBoard& CBoard::operator=(const CBoard& cmp)
-{
-	setBoard(cmp._s);
-	_turn = cmp._turn;
-	return *this;
 }
 
 void CBoard::moveStone(Move m)
@@ -72,6 +79,7 @@ void CBoard::reverseMove()
 
 	_x0.pop(); _y0.pop();
 	_id.pop(); _revive.pop();
+	_turn = !_turn;
 }
 
 Move CBoard::makeRevMove(Move m)
@@ -109,7 +117,7 @@ unsigned long long CBoard::getJumianLL()
 	return ret;
 }
 
-int CBoard::evaluate(bool turn)
+int CBoard::getScore(bool turn)
 {
 	int ret = 0;
 	for (int i = 0; i < 32; i++)
@@ -123,13 +131,25 @@ int CBoard::evaluate(bool turn)
 	return ret;
 }
 
-int CBoard::evaluate(int depth, int firstScore, bool turn)
+int CBoard::initEvaluate()
+{
+	_firstScore = getScore(_turn);
+	return _firstScore;
+}
+
+bool CBoard::getTurn()
+{
+	return _turn;
+}
+
+//当前轮次， 评判颜色
+int CBoard::evaluate(bool turn)
 {
 	//return evaluate(turn) - firstScore;
-	if (depth % 2 == 1)
-		return evaluate(turn) - firstScore;
+	if (_turn != turn)
+		return getScore(turn) - _firstScore;
 	else
-		return firstScore - evaluate(turn);
+		return _firstScore - getScore(turn);
 }
 
 bool CBoard::isGameOver()
@@ -173,6 +193,58 @@ void CBoard::setHas()
 		else
 			has[_s[i]._x][_s[i]._y] = i;
 	}
+}
+
+//列举所有的走法，杀子优先，弑君截断
+std::vector<Move> CBoard::listKillMove()
+{
+	
+	std::vector<Move> ret, wang, head;
+	int st = 0, ed = 16;
+	if (_s[0].getRed() != _turn)
+	{
+		st = 16;
+		ed = 32;
+	}
+	for (int i = st; i < ed; i++)
+	{
+		auto tmp = listMove(i);
+		for (auto m : tmp)
+		{
+			if (m.killid != -1)
+			{
+				if (m.killid == 4 || m.killid == 20)
+				{
+					wang.push_back(m);
+					return wang;
+				}
+				else
+					head.push_back(m);
+			}
+			else
+			{
+				ret.push_back(m);
+			}
+		}
+	}
+
+	for (int i = 0; i < head.size(); i++)
+	{
+		int j = rand() % head.size();
+		std::swap(head[i], head[j]);
+	}
+
+	for (int i = 0; i < ret.size(); i++)
+	{
+		int j = rand() % ret.size();
+		std::swap(ret[i], ret[j]);
+	}
+	head.insert(head.end(), ret.begin(), ret.end());
+	/*for (int i = 0; i < std::min(head.size(), ret.size()); i++)
+	{
+		head.push_back(ret[i]);
+	}*/
+	return head;
 }
 
 std::list<Move> CBoard::listMove(int mid)

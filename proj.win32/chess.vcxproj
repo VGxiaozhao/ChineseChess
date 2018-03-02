@@ -266,6 +266,7 @@ xcopy /Y /Q "$(COCOS_FRAMEWORKS)\cocos2d-x-3.9\prebuilt\win32\*.*" "$(OutDir)"
     <ClCompile Include="..\Classes\Brain.cpp" />
     <ClCompile Include="..\Classes\HashMap.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
+    <ClCompile Include="..\Classes\MonteCarlo.cpp" />
     <ClCompile Include="..\Classes\SceneGame.cpp" />
     <ClCompile Include="..\Classes\SceneStart.cpp" />
     <ClCompile Include="..\Classes\SRule.cpp" />
@@ -279,6 +280,7 @@ xcopy /Y /Q "$(COCOS_FRAMEWORKS)\cocos2d-x-3.9\prebuilt\win32\*.*" "$(OutDir)"
     <ClInclude Include="..\Classes\Brain.h" />
     <ClInclude Include="..\Classes\HashMap.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
+    <ClInclude Include="..\Classes\MonteCarlo.h" />
     <ClInclude Include="..\Classes\SceneGame.h" />
     <ClInclude Include="..\Classes\SceneStart.h" />
     <ClInclude Include="..\Classes\SRule.h" />
@@ -287,9 +289,6 @@ xcopy /Y /Q "$(COCOS_FRAMEWORKS)\cocos2d-x-3.9\prebuilt\win32\*.*" "$(OutDir)"
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Classes\am.py" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

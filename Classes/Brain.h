@@ -11,16 +11,20 @@ class CBrain
 {
 public:
 	CBrain(bool red, Stone* s[32]);
+	CBrain(CBoard);
 	CBrain();
 	virtual ~CBrain();
+	//返回一个结果
 	Move think();
+	//打乱序列顺序
 	void disorder();
+	//在搜索过程中移动棋子
 	void moveStone(Move m);
+	//在搜索过程中撤销上一步移动棋子
 	void reverseMove(Move m);
-	Move makeRevMove(Move m);
-	bool isGameOver();
+
 	int  alphaBetaSearch(bool turn, int depth, int alpha, int beta);
-	void alphaBetaSearch();
+	Move alphaBetaSearch(int);
 	std::string getCurJu();
 	unsigned long long getJuMianLL();
 	Move int2move(int);
@@ -37,7 +41,6 @@ private:
 	int _searchCount;
 	int _hashcnt;
 	int _firstScore;
-	CHashMap *mp[6];
 	CBoard* _board;
 };
 
