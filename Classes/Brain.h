@@ -30,6 +30,7 @@ public:
 	Move int2move(int);
 	void setPad(Stone* s[32], bool turn);
 	void init();
+	Move getNNMove();
 	int quies(bool turn, int depth, int alpha, int beta);
 	int evaluate(bool);
 	int evaluate(int);

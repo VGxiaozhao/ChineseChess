@@ -116,32 +116,32 @@ Start(NULL);
     menu->addChild(item);
     item->setPositionX(itemStart->getPositionX());
     item->setPositionY(itemStart->getPositionY() - 60);
-    //创建暂停按钮 
-    auto itemPause = MenuItemImage::create("pause.jpg", "pause.jpg", this, menu_selector(SceneGame::Pause));
-    menu->addChild(itemPause);
-    itemPause->setPositionX(itemStart->getPositionX());
-    itemPause->setPositionY(itemStart->getPositionY() - 60 - 60);
-    //创建难度按钮 
-    auto itemDifficulty = MenuItemImage::create("difficulty.jpg", "difficulty.jpg", this, menu_selector(SceneGame::Difficulty));
-    menu->addChild(itemDifficulty);
-    itemDifficulty->setPositionX(itemStart->getPositionX());
-    itemDifficulty->setPositionY(itemStart->getPositionY() - 60 - 60 - 60);
-    //创建播放背景音乐按钮 
-    auto itemVoice = MenuItemImage::create("openVolice.png", "closeVolice.png", this, menu_selector(SceneGame::Voice));
-    menu->addChild(itemVoice);
-    itemVoice->setPositionX(itemStart->getPositionX());
-    itemVoice->setPositionY(itemStart->getPositionY() - 60 - 60 - 60 - 60);
+    ////创建暂停按钮 
+    //auto itemPause = MenuItemImage::create("pause.jpg", "pause.jpg", this, menu_selector(SceneGame::Pause));
+    //menu->addChild(itemPause);
+    //itemPause->setPositionX(itemStart->getPositionX());
+    //itemPause->setPositionY(itemStart->getPositionY() - 60 - 60);
+    ////创建难度按钮 
+    //auto itemDifficulty = MenuItemImage::create("difficulty.jpg", "difficulty.jpg", this, menu_selector(SceneGame::Difficulty));
+    //menu->addChild(itemDifficulty);
+    //itemDifficulty->setPositionX(itemStart->getPositionX());
+    //itemDifficulty->setPositionY(itemStart->getPositionY() - 60 - 60 - 60);
+    ////创建播放背景音乐按钮 
+    //auto itemVoice = MenuItemImage::create("openVolice.png", "closeVolice.png", this, menu_selector(SceneGame::Voice));
+    //menu->addChild(itemVoice);
+    //itemVoice->setPositionX(itemStart->getPositionX());
+    //itemVoice->setPositionY(itemStart->getPositionY() - 60 - 60 - 60 - 60);
 
     //CCLog("x=%lf", itemStart->getPositionX());
     //CCLog("y=%lf", itemStart->getPositionY() - 240);
 
-    //创建一个字体,并且以此为字体的文字  
-    auto label = LabelTTF::create("Voice", "Arial", 25);  
-    addChild(label);
-    //设置文字的位置  
-    label->setPosition(ccp(winSize.width/2 + 120, winSize.height/2 - 120));
-    //设置文字的颜色 
-    label->setColor(ccc3(0, 0, 0));
+    ////创建一个字体,并且以此为字体的文字  
+    //auto label = LabelTTF::create("Voice", "Arial", 25);  
+    //addChild(label);
+    ////设置文字的位置  
+    //label->setPosition(ccp(winSize.width/2 + 120, winSize.height/2 - 120));
+    ////设置文字的颜色 
+    //label->setColor(ccc3(0, 0, 0));
     //创建数组 
     _steps = Array::create();
     _steps->retain();
@@ -456,6 +456,7 @@ void SceneGame::moveComplete(Node* movestone, void* _killid)
     //移动了一步棋后 
     //切换移动的棋子的颜色 
     _redTurn = ! _redTurn;
+	//callAI();
 	if (!_redTurn)
 	{
 		callAI();
@@ -488,11 +489,14 @@ void SceneGame::callAI()
 	moveStone(mid, kid, x, y);*/
 	MonteCarlo mc(_s, _redTurn);
 	moveStone(mc.UCTSearch());
-	mc.show();
 	//以下为AlphaBeta搜索
 	/*
 	_brain.setPad(_s, _redTurn);
 	moveStone(_brain.think());
 	*/
+	//监督学习
+	/*_brain.setPad(_s, _redTurn);
+	Move e = _brain.getNNMove();
+	moveStone(e);*/
 }
 

@@ -4,14 +4,11 @@
 MonteCarlo::MonteCarlo(Stone* s[], bool turn)
 {
 	_arrNode.clear();
-	_tree.clear();
 	CBoard newBoard(s, turn);
 	_arrNode.push_back(Node(newBoard, -1));
-	std::vector<int> tmp;
-	_tree.push_back(tmp);
 	_turn = turn;
 	_initScore = newBoard.getScore(_turn);
-	_c = 1.5;
+	_c = 0.5;
 	_tol = 0;
 	memset(_head, -1, sizeof(_head));
 }
@@ -25,18 +22,21 @@ MonteCarlo::~MonteCarlo()
 Move MonteCarlo::UCTSearch()
 {
 	int st = clock();
-	//while (clock() - st <= 5000)
-	for (int i = 0; i < 500; i++)
+	while (clock() - st <= 10000)
+	//for (int i = 0; i < 300; i++)
 	{
 		int v = treePolicy(0);
 		int d = defaultPolicy(_arrNode[v]._board);
 		backup(v, d);
 	}
 	int v = bestChild(0);
-	for (int i = 0; i < _tree[0].size(); i++)
+	for (int i = _head[0], j = _arrNode[0]._all-1; i != -1; i = _edge[i].next, j--)
 	{
-		if (_tree[0][i] == v)
-			return _arrNode[0]._move[i];
+		if (_edge[i].v == v)
+		{
+			show(_arrNode[0]._move[j], j);
+			return _arrNode[0]._move[j];
+		}
 	}
 }
 
@@ -45,44 +45,43 @@ int MonteCarlo::treePolicy(int u)
 	int f = u;
 	int tmp = _arrNode[u]._all;
 
-	while (_arrNode[u]._n!=0 && _arrNode[u]._all>=_arrNode[u]._move.size() && u!=-1 && !_arrNode[u]._board.isGameOver())
+	while (_arrNode[u]._n!=0 && _arrNode[u]._all>=_arrNode[u]._move.size() && u!=-1)
 	{
 		u = bestChild(u);
 	}
 	if (u == -1) return f;
-	int v = expand(u);
+
+	int i = _arrNode[u]._all;
+	Move& m = _arrNode[u]._move[i];
+	//移动棋子以生成新棋盘
+	CBoard newBoard = _arrNode[u]._board;
+	newBoard.moveStone(m);
+
+	//添加新节点
+	_arrNode.push_back(Node(newBoard, u));
+	_arrNode[u]._all++;
+	int v = _arrNode.size() - 1;
+	addEdge(u, v);
 	return v;
 }
 
-int MonteCarlo::expand(int u)
+void MonteCarlo::addEdge(int u, int v)
 {
-	if (u < 0) return u;
-	for (int i = _arrNode[u]._all; i < _arrNode[u]._move.size(); i++)
-	{
-		Move& m = _arrNode[u]._move[i];
-		_arrNode[u]._board.moveStone(m);
-		CBoard newBoard = _arrNode[u]._board;
-		_arrNode[u]._board.reverseMove();
-		_arrNode.push_back(Node(newBoard, u));
-		_tree[u].push_back(_arrNode.size()-1);
-		std::vector<int> tmp;
-		_tree.push_back(tmp);
-		_arrNode[u]._all++;
-		break;
-	}
-	return _arrNode.size() - 1;
+	_edge[_tol].v = v;
+	_edge[_tol].next = _head[u];
+	_head[u] = _tol++;
 }
 
 int MonteCarlo::bestChild(int u)
 {
 	double mx = -1222222;
 	int ret = -1;
-	for (int i = 0; i<_tree[u].size(); i++)
+	for (int i = _head[u]; i!=-1; i=_edge[i].next)
 	{
-		int v = _tree[u][i];
+		int v = _edge[i].v;
 		double tmp = 0.0;
 		if (_arrNode[v]._n)
-			tmp = 1.0*_arrNode[v]._q / _arrNode[v]._n * _c*(sqrt(2.0*log(_arrNode[u]._n) / _arrNode[v]._n));
+			tmp = ((1.0*_arrNode[v]._q) / _arrNode[v]._n) + _c*(sqrt(2.0*log(_arrNode[u]._n) / _arrNode[v]._n));
 		else
 			continue;
 		if (tmp > mx)
@@ -96,14 +95,18 @@ int MonteCarlo::bestChild(int u)
 
 int MonteCarlo::defaultPolicy(CBoard board)
 {
-	for (int i = 0; i < 3 && !board.isGameOver(); i++)
+	for (int i = 0; i < 0 && !board.isGameOver(); i++)
 	{
 		CBrain d(board);
-		auto m = d.alphaBetaSearch(1);
+		Move m = d.alphaBetaSearch(1);
+		//Move m = board.getNNMove();
 		board.moveStone(m);
 	}
 	int ed = board.getScore(_turn);
-	return ed>_initScore ? 1 : 0;
+	int d = ed - _initScore;
+	return d > 0 ? 1 : 0;
+	if (_turn == board.getTurn())
+		d = _initScore - ed;
 }
 
 void MonteCarlo::backup(int v, int d)
@@ -116,16 +119,18 @@ void MonteCarlo::backup(int v, int d)
 	}
 }
 
-void MonteCarlo::show()
+void MonteCarlo::show(Move m, int wv)
 {
 	auto fp = fopen("d:/cmd.txt", "w+");
-	for (int u = 0; u < _tree.size(); u++)
+	fprintf(fp, "mid: %d, kid : %d, x : %d, y : %d\n", m.moveid, m.killid, m.x, m.y);
+	fprintf(fp, "choose %d\n", wv);
+	for (int i = 0; i < _arrNode.size(); i++)
 	{
-		if (_arrNode[u]._move.size() == 0) continue;
-		fprintf(fp, "%d->%d(%d/%d): ", _arrNode[u]._father, u, _arrNode[u]._q, _arrNode[u]._n);
-		for (auto id : _tree[u])
+		fprintf(fp, "%d->%d(%d/%d): ", _arrNode[i]._father, i, _arrNode[i]._q, _arrNode[i]._n);
+		for (int j = _head[i]; j != -1; j = _edge[j].next)
 		{
-			fprintf(fp, "%d(%d/%d) ",id, _arrNode[id]._q, _arrNode[id]._n);
+			int v = _edge[j].v;
+			fprintf(fp, "%d(%d/%d) ",v, _arrNode[v]._q, _arrNode[v]._n);
 		}
 		fprintf(fp, "\n");
 	}

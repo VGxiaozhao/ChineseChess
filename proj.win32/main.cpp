@@ -1,6 +1,8 @@
 #include "main.h"
 #include "AppDelegate.h"
 #include "cocos2d.h"
+#include <thread>
+#include <process.h>
 
 USING_NS_CC;
 
@@ -18,6 +20,10 @@ USING_NS_CC;
 #pragma comment(lib,"libbullet_2013.lib")
 #endif
 
+void console_system();
+int cur_pid = getpid();
+
+
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                        HINSTANCE hPrevInstance,
                        LPTSTR    lpCmdLine,
@@ -26,7 +32,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 	srand(time(NULL));
+	/*std::thread t1(console_system);
+	t1.detach();*/
     // create the application instance
     AppDelegate app;
     return Application::getInstance()->run();
+}
+
+void console_system()
+{
+	//system("start "" /min python D:\\VS_Project\\testPython\\testPython\\cnn_go.py");
+	system("python D:\\VS_Project\\testPython\\testPython\\cnn_go.py");
 }

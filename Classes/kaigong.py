@@ -129,10 +129,17 @@ def getFuckingAccuracy():
 	sum = 0.0
 	for i in range(ss):
 		sum += accuracy.eval(feed_dict={x_: test_x[i], y_: test_y[i]})
+		if i==0:
+			ret = sess.run(y_conv, feed_dict = {x_: test_x[i], y_: test_y[i]})
+			tmp = []
+			for intt, outt in zip(ret, test_y[i]):
+				x = np.argmax(intt)
+				y = np.argmax(outt)
+				print(x, '=', y, end=', ')
 	sum /= ss
 	return sum
 	
-first_step = 8000
+first_step = 1
 for _ in range(3):
 	print("start fucking train")
 	step = 1

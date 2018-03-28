@@ -78,7 +78,10 @@ public:
 	bool isGameOver();
 	void setHas();
 	bool isOnCheck(bool turn);
-
+	std::string  toString();
+	Move getNNMove();
+	std::vector<Move> get10NNMove();
+	Move intToMove(int tmp);
 public:
 	bool isEnemy(int a, int b);
 	bool isGoOut(int mid, int x, int y);

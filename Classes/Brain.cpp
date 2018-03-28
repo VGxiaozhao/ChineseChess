@@ -60,6 +60,11 @@ void CBrain::init()
 	_board = NULL;
 }
 
+Move CBrain::getNNMove()
+{
+	return _board->getNNMove();
+}
+
 Move CBrain::alphaBetaSearch(int depth)
 {
 	disorder();

@@ -18,11 +18,8 @@ def bias_variable(shape):
 def conv2d(x, W):
 	return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
 
-def max_pool_2x2(x):
-	return tf.nn.max_pool(x, ksize=[1, 2, 2, 1],strides=[1, 2, 2, 1], padding='SAME')
-
 #占位符
-x = tf.placeholder("float", shape=[None, 2880])
+x_ = tf.placeholder("float", shape=[None, 2880])
 y_ = tf.placeholder("float", shape=[None, 1440])
 
 W_conv1 = weight_variable([5, 5, 32, 64])
@@ -40,7 +37,7 @@ b_conv6 = bias_variable([32])
 W_conv7 = weight_variable([3, 3, 32, 16])
 b_conv7 = bias_variable([16])
 
-x_image = tf.reshape(x, [-1,9,10,32])
+x_image = tf.reshape(x_, [-1,9,10,32])
 h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)
 h_conv2 = tf.nn.relu(conv2d(h_conv1, W_conv2) + b_conv2)
 h_conv3 = tf.nn.relu(conv2d(h_conv2, W_conv3) + b_conv3)
@@ -67,24 +64,7 @@ if os.path.exists(data_path+".meta"):
 else:
 	sess.run(tf.global_variables_initializer())
 
-def data_process(data):
-	x = []
-	y = []
-	for item in data:
-		tx = []
-		for xx in item[0]:
-			tx.append(float(xx[0]))
-		tx = np.array(tx)
-		x.append(tx)
-		
-		ty = []
-		for yy in item[1]:
-			ty.append(float(yy[0]))
-		ty = np.array(ty)
-		y.append(ty)
-	return np.array(x), np.array(y)
-	
-rtest_x,rtest_y = qipu2.getTrainData('D:/qipu_dp/_%d.txt', 81950,82000)
+rtest_x,rtest_y = qipu2.getTrainData('D:/qipu_dp/_%d.txt', 81000,81050)
 test_x, test_y = [], []
 ss = 10
 slice = int(len(rtest_x )/ss)
@@ -96,9 +76,32 @@ for i in range(0, len(rtest_x), slice):
 def getFuckingAccuracy():
 	sum = 0.0
 	for i in range(ss):
-		sum += accuracy.eval(feed_dict={x: test_x[i], y_: test_y[i]})
+		sum += accuracy.eval(feed_dict={x_: test_x[i], y_: test_y[i]})
+		'''
+		if i==0:
+			ret = sess.run(y_conv, feed_dict = {x_: test_x[i], y_: test_y[i]})
+			tmp = []
+			for intt, outt in zip(ret, test_y[i]):
+				x = np.argmax(intt)
+				y = np.argmax(outt)
+				print(x, '=', y, end=', ')
+		'''
 	sum /= ss
 	return sum
+	
+def cast(string):
+	vec = np.array([[0.0 for i in range(2880)]])
+	yyy = np.array([[0.0 for i in range(1440)]])
+	lei = 0
+	for i in range(len(string), 2):
+		x = ord(string[i]) - ord('0')
+		y = ord(string[i+1]) - ord('0')
+		if x!=9 or y!=9:
+			tmp = lei + x*10 + y
+			vec[tmp] = 1.0
+		lei += 90
+	ret = sess.run(y_conv, feed_dict = {x_:vec, y_:yyy})
+	return (np.argmax(ret))
 	
 first_step = 1
 for _ in range(3):
@@ -116,7 +119,7 @@ for _ in range(3):
 			i+=step
 			continue
 		st = time.time()
-		train_step.run(feed_dict={x: tx, y_: ty})
+		train_step.run(feed_dict={x_: tx, y_: ty})
 		ed = time.time()
 		'''
 		print(i,end=', ')
@@ -125,6 +128,7 @@ for _ in range(3):
 		'''
 		if i%100==1:
 			print ("test accuracy %g"%getFuckingAccuracy())
+			#print ("test accuracy %g(%d / %d)"%getAccuracy())
 		if i%1000==761:	
 			print ('write data to hard disk')
 			saver.save(sess, data_path)

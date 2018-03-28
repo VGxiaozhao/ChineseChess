@@ -1,5 +1,6 @@
 #include "Board.h"
-
+#include <fstream>
+#include <io.h>
 
 CBoard::CBoard(Stone* s[], bool turn)
 {
@@ -180,6 +181,155 @@ bool CBoard::isOnCheck(bool turn)
 		}
 	}
 	return false;
+}
+
+std::string CBoard::toString()
+{
+	std::string ret = "";
+	int st1 = 0, st2 = 16, st3 = 32;
+	bool turn = false;
+	if (_s[0].getRed() == _turn)
+		turn = true;
+	for (int i = 0; i < 32&&!turn; i++)
+	{
+		if (_s[i].getDead() == true)
+			ret += "99";
+		else
+		{
+			char x = (8 - _s[i].getX()) + '0';
+			char y = (9 - _s[i].getY()) + '0';
+			ret += x;
+			ret += y;
+		}
+	}
+	if (turn) 
+	{
+		for (int i = 16; i < 32; i++)
+		{
+			if (_s[i].getDead() == true)
+				ret += "99";
+			else
+			{
+				char x = _s[i].getX() + '0';
+				char y = _s[i].getY() + '0';
+				ret += x;
+				ret += y;
+			}
+		}
+		for (int i = 0; i < 16; i++)
+		{
+			if (_s[i].getDead() == true)
+				ret += "99";
+			else
+			{
+				char x = _s[i].getX() + '0';
+				char y = _s[i].getY() + '0';
+				ret += x;
+				ret += y;
+			}
+		}
+	}
+	return ret;
+}
+
+Move CBoard::getNNMove()
+{
+	std::string str = toString();
+	std::string mov = "";
+	char txtBoard[] = "d:/txtboard.txt";
+	char tagBoard[] = "d:/tagboard.txt";
+	char txtMove[] = "d:/txtmove.txt";
+	char tagMove[] = "d:/tagmove.txt";
+	//删除文件
+	remove(tagMove);
+	remove(txtMove);
+	//写棋盘
+	std::ofstream out;
+	out.open(txtBoard, std::ios::trunc);
+	out << str;
+	out.close();
+	//写棋盘标识
+	std::ofstream tag;
+	tag.open(tagBoard, std::ios::trunc);
+	tag << "1";
+	tag.close();
+	int tmp = 0;
+	//输出标识是否存在
+	while (_access(tagMove, 0) == -1);
+	//读取内容
+	std::fstream in;
+	in.open(txtMove, std::ios::in);
+	in >> mov;
+	for (char i : mov)
+	{
+		tmp = tmp * 10 + (i - '0');
+	}
+	in.close();
+	setHas();
+	return intToMove(tmp);
+}
+
+std::vector<Move> CBoard::get10NNMove()
+{
+	std::vector<Move> ret;
+	std::string str = toString();
+	std::string mov = "";
+	char txtBoard[] = "d:/txtboard.txt";
+	char tagBoard[] = "d:/tagboard10.txt";
+	char txtMove[] = "d:/txtmove.txt";
+	char tagMove[] = "d:/tagmove10.txt";
+	//删除文件
+	remove(tagMove);
+	remove(txtMove);
+	//写棋盘
+	std::ofstream out;
+	out.open(txtBoard, std::ios::trunc);
+	out << str;
+	out.close();
+	//写棋盘标识
+	std::ofstream tag;
+	tag.open(tagBoard, std::ios::trunc);
+	tag << "1";
+	tag.close();
+	int tmp = 0;
+	//输出标识是否存在
+	while (_access(tagMove, 0) == -1);
+	//读取内容
+	setHas();
+	std::fstream in;
+	in.open(txtMove, std::ios::in);
+	while (std::getline(in, mov))
+	{
+		tmp = 0;
+		for (char i : mov)
+		{
+			tmp = tmp * 10 + (i - '0');
+		}
+		ret.push_back(intToMove(tmp));
+	}
+	in.close();
+	return ret;
+}
+
+Move CBoard::intToMove(int tmp)
+{
+	int id, x, y;
+	bool turn = false;
+	if (_s[0].getRed() == _turn)
+		turn = true;
+	if (turn == true)
+	{
+		id = tmp / 90;
+		x = ((tmp % 90) / 10);
+		y = ((tmp % 90) % 10);
+	}
+	else
+	{
+		id = tmp / 90 + 16;
+		x = 8 - ((tmp % 90) / 10);
+		y = 9 - ((tmp % 90) % 10);
+	}
+	return Move(id, has[x][y], x, y);
 }
 
 void CBoard::setHas()
