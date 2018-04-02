@@ -13,6 +13,16 @@ MonteCarlo::MonteCarlo(Stone* s[], bool turn)
 	memset(_head, -1, sizeof(_head));
 }
 
+MonteCarlo::MonteCarlo(CBoard s, bool turn)
+{
+	_arrNode.clear();
+	_arrNode.push_back(Node(s, -1));
+	_turn = turn;
+	_initScore = s.getScore(_turn);
+	_c = 0.5;
+	_tol = 0;
+	memset(_head, -1, sizeof(_head));
+}
 
 MonteCarlo::~MonteCarlo()
 {
@@ -45,7 +55,7 @@ int MonteCarlo::treePolicy(int u)
 	int f = u;
 	int tmp = _arrNode[u]._all;
 
-	while (_arrNode[u]._n!=0 && _arrNode[u]._all>=_arrNode[u]._move.size() && u!=-1)
+	while (u != -1 && _arrNode[u]._n!=0 && _arrNode[u]._all>=_arrNode[u]._move.size())
 	{
 		u = bestChild(u);
 	}

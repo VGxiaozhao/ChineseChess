@@ -4,6 +4,8 @@
 #include "cocos2d.h"
 USING_NS_CC;
 
+static int initPad[] = { 5,3,2,2,6,2,2,3,5,4,4,1,1,1,1,1,5,3,2,2,6,2,2,3,5,4,4,1,1,1,1,1 };
+
 struct Move{
 	Move(){}
 	Move(int _moveid, int _killid, int _x, int _y){
@@ -29,6 +31,17 @@ struct Move{
 			return true;
 		else
 			return false;
+	}
+	bool operator<(const Move& cmp) const
+	{
+		if (::initPad[killid] == ::initPad[cmp.killid])
+		{
+			if (::initPad[moveid] < ::initPad[cmp.moveid])
+				return true;
+			else
+				return false;
+		}
+		return ::initPad[killid] > ::initPad[cmp.killid];
 	}
 	int moveid, killid, x, y;
 };

@@ -456,13 +456,13 @@ void SceneGame::moveComplete(Node* movestone, void* _killid)
     //移动了一步棋后 
     //切换移动的棋子的颜色 
     _redTurn = ! _redTurn;
-	//callAI();
-	if (!_redTurn)
-	{
-		callAI();
-		/*std::thread t1(&SceneGame::callAI, this);
-		t1.detach();*/
-	}
+	callAI();
+	//if (!_redTurn)
+	//{
+	//	callAI();
+	//	/*std::thread t1(&SceneGame::callAI, this);
+	//	t1.detach();*/
+	//}
 }
 
 void SceneGame::moveStone(Move m)
@@ -472,31 +472,7 @@ void SceneGame::moveStone(Move m)
 
 void SceneGame::callAI()
 {
-	/*int mid, x, y, kid;
-	int kred, mred;
-	do{
-		int end = 16, start = 31;
-		mid = (int)(CCRANDOM_0_1()*(end - start + 1) + start);
-		x = (int)(CCRANDOM_0_1() * 8);
-		y = (int)(CCRANDOM_0_1() * 9);
-		kid = getStone(x, y);
-		mred = _s[mid]->getRed();
-		if (kid != -1)
-			kred = _s[kid]->getRed();
-		else
-			kred = !mred;
-	} while (!SRule::canMove(mid, kid, x, y, _s, _redSide));
-	moveStone(mid, kid, x, y);*/
-	MonteCarlo mc(_s, _redTurn);
-	moveStone(mc.UCTSearch());
-	//以下为AlphaBeta搜索
-	/*
 	_brain.setPad(_s, _redTurn);
 	moveStone(_brain.think());
-	*/
-	//监督学习
-	/*_brain.setPad(_s, _redTurn);
-	Move e = _brain.getNNMove();
-	moveStone(e);*/
 }
 

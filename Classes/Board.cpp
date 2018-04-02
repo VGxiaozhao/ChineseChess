@@ -234,6 +234,8 @@ std::string CBoard::toString()
 
 Move CBoard::getNNMove()
 {
+	auto vet = get10NNMove();
+	return vet[0];
 	std::string str = toString();
 	std::string mov = "";
 	char txtBoard[] = "d:/txtboard.txt";
@@ -345,11 +347,23 @@ void CBoard::setHas()
 	}
 }
 
+//listKillMove 函数的排序算法
+bool CBoard::cmp(Move a, Move b)
+{
+	if (a.killid == b.killid)
+	{
+		if (a.moveid < b.moveid)
+			return true;
+		else
+			return false;
+	}
+	return a.killid>b.killid;
+}
+
 //列举所有的走法，杀子优先，弑君截断
 std::vector<Move> CBoard::listKillMove()
 {
-	
-	std::vector<Move> ret, wang, head;
+	std::vector<Move> ret, wang;
 	int st = 0, ed = 16;
 	if (_s[0].getRed() != _turn)
 	{
@@ -369,7 +383,7 @@ std::vector<Move> CBoard::listKillMove()
 					return wang;
 				}
 				else
-					head.push_back(m);
+					ret.push_back(m);
 			}
 			else
 			{
@@ -377,24 +391,47 @@ std::vector<Move> CBoard::listKillMove()
 			}
 		}
 	}
+	std::sort(ret.begin(), ret.end());
+	return ret;
+}
 
-	for (int i = 0; i < head.size(); i++)
+//列举所有着法，主要为了蒙树搜索。
+std::vector<Move> CBoard::listAllMove()
+{
+	std::vector<Move> ret, wang;
+	int st = 0, ed = 16;
+	if (_s[0].getRed() != _turn)
 	{
-		int j = rand() % head.size();
-		std::swap(head[i], head[j]);
+		st = 16;
+		ed = 32;
 	}
-
+	for (int i = st; i < ed; i++)
+	{
+		auto tmp = listMove(i);
+		for (auto m : tmp)
+		{
+			if (m.killid != -1)
+			{
+				if (m.killid == 4 || m.killid == 20)
+				{
+					wang.push_back(m);
+					return wang;
+				}
+				else
+					ret.push_back(m);
+			}
+			else
+			{
+				ret.push_back(m);
+			}
+		}
+	}
 	for (int i = 0; i < ret.size(); i++)
 	{
 		int j = rand() % ret.size();
 		std::swap(ret[i], ret[j]);
 	}
-	head.insert(head.end(), ret.begin(), ret.end());
-	/*for (int i = 0; i < std::min(head.size(), ret.size()); i++)
-	{
-		head.push_back(ret[i]);
-	}*/
-	return head;
+	return ret;
 }
 
 std::list<Move> CBoard::listMove(int mid)

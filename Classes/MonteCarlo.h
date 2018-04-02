@@ -18,7 +18,7 @@ private:
 		Node(){}
 		Node(CBoard board, int u){
 			_board = board;
-			//_move = _board.listKillMove();
+			//_move = _board.listAllMove();
 			_move = _board.get10NNMove();
 			_all = _q = _n = 0;
 			_father = u;
@@ -31,6 +31,7 @@ private:
 	};
 public:
 	MonteCarlo(Stone* s[], bool turn);
+	MonteCarlo(CBoard s, bool turn);
 	~MonteCarlo();
 public:
 	Move UCTSearch();

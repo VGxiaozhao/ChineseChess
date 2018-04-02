@@ -24,6 +24,8 @@ public:
 	void reverseMove(Move m);
 
 	int  alphaBetaSearch(bool turn, int depth, int alpha, int beta);
+	Move alphaBetaSearchWithSL(int depth);
+	int alphaBetaSearchWithSL(bool turn, int depth, int alpha, int beta);
 	Move alphaBetaSearch(int);
 	std::string getCurJu();
 	unsigned long long getJuMianLL();
@@ -42,6 +44,7 @@ private:
 	int _searchCount;
 	int _hashcnt;
 	int _firstScore;
+	int _alpha, _beta;
 	CBoard* _board;
 };
 
