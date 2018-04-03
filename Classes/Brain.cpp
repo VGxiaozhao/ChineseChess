@@ -77,7 +77,7 @@ Move CBrain::alphaBetaSearch(int depth)
 {
 	disorder();
 	_bestMove.zero();
-	int val = 50000;
+	int val = stChessman::JIANGVAL/2;
 	int win = 2;
 	for (int i = 1; i <= depth; i++)
 	{
@@ -85,7 +85,7 @@ Move CBrain::alphaBetaSearch(int depth)
 		_firstScore = _board->initEvaluate();
 		_hashcnt = _searchCount = 0;
 		if (i==1)
-			val = alphaBetaSearch(_turn, _depth, -50000, 50000);
+			val = alphaBetaSearch(_turn, _depth, -stChessman::INFVAL, stChessman::INFVAL);
 		else
 			val = alphaBetaSearch(_turn, _depth, val-win, val+win);
 		log("\n\ndepth: %d, val: %d, cnt: %d, hash: %d", i, val, _searchCount, _hashcnt);
@@ -151,7 +151,7 @@ int  CBrain::alphaBetaSearch(bool turn, int depth, int alpha, int beta)
 Move CBrain::alphaBetaSearchWithSL(int depth)
 {
 	_bestMove.zero();
-	int val = 50000;
+	int val = stChessman::JIANGVAL / 2;
 	_firstScore = _board->initEvaluate();
 	_hashcnt = _searchCount = 0;
 	_depth = depth;

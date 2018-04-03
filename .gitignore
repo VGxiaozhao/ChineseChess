@@ -24,5 +24,6 @@ proj.win32/chess.v12.suo
 *.res
 proj.win32/HashMap.h
 Classes/testNN.py
+Classes/old/
 proj.win32/chess.VC.VC.opendb
 proj.win32/chess.VC.db

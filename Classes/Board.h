@@ -6,7 +6,7 @@
 #include <vector>
 #include <string.h>
 
-static int position_score[7][10][9] = {
+static const int position_score[7][10][9] = {
 	{//Bing
 		{ 9,  9,  9, 11, 13, 11,  9,  9,  9 },
 		{ 29, 39, 59, 74, 79, 74, 59, 39, 29 },
@@ -95,6 +95,8 @@ static int position_score[7][10][9] = {
 
 struct stChessman
 {
+	static const int JIANGVAL = 100000;
+	static const int INFVAL = 50000;
 	int _x, _y;
 	void setX(int x) { _x = x; }
 	int getX() { return _x; }
@@ -125,7 +127,7 @@ struct stChessman
 	{
 		int ret = 0;
 		if (_type == Stone::JIANG)
-			ret = 100000;
+			ret = JIANGVAL;
 		/*else if (_type == Stone::BING)
 		ret = 2;
 		else if (_type == Stone::JU)
