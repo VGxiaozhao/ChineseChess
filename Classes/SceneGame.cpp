@@ -197,7 +197,11 @@ Start(NULL);
         return true;
     };
     Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener,this);
-
+	if (!red)
+	{
+		std::thread t1(&SceneGame::callAI, this);
+		t1.detach();
+	}
     return true;
 }
 
@@ -456,13 +460,13 @@ void SceneGame::moveComplete(Node* movestone, void* _killid)
     //移动了一步棋后 
     //切换移动的棋子的颜色 
     _redTurn = ! _redTurn;
-	callAI();
-	//if (!_redTurn)
-	//{
-	//	callAI();
-	//	/*std::thread t1(&SceneGame::callAI, this);
-	//	t1.detach();*/
-	//}
+	//callAI();
+	//if (_redTurn != _redSide)
+	{
+		callAI();
+		/*std::thread t1(&SceneGame::callAI, this);
+		t1.detach();*/
+	}
 }
 
 void SceneGame::moveStone(Move m)

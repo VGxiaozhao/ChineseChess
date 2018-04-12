@@ -16,6 +16,8 @@ public:
 	virtual ~CBrain();
 	//返回一个结果
 	Move think();
+	bool findKillerMove(Move & m, bool);
+	Move alphaBetaSearchByTime(int second);
 	//打乱序列顺序
 	void disorder();
 	//在搜索过程中移动棋子

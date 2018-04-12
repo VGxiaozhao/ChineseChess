@@ -15,11 +15,13 @@ private:
 		int _q, _n, _all, _father;
 		CBoard _board;
 		std::vector<Move> _move;
+		std::vector<double> _poss;
 		Node(){}
 		Node(CBoard board, int u){
 			_board = board;
 			//_move = _board.listAllMove();
 			_move = _board.get10NNMove();
+			_poss = _board.getNNMovePossi();
 			_all = _q = _n = 0;
 			_father = u;
 			//_move.clear();
@@ -37,6 +39,7 @@ public:
 	Move UCTSearch();
 	int treePolicy(int);
 	int bestChild(int v);
+	int bestChildUsePoss(int u);
 	int defaultPolicy(CBoard v);
 	void backup(int v, int d);
 	void show(Move, int);

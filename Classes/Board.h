@@ -164,7 +164,6 @@ public:
 	CBoard& operator=(const CBoard& cmp);
 	void moveStone(Move m);
 	void reverseMove();
-	Move makeRevMove(Move m);
 	std::string getJumianStr();
 	unsigned long long getJumianLL();
 	int evaluate(bool);
@@ -176,6 +175,7 @@ public:
 	std::string  toString();
 	Move getNNMove();
 	std::vector<Move> get10NNMove();
+	std::vector<double> getNNMovePossi();
 	Move intToMove(int tmp);
 public:
 	bool isEnemy(int a, int b);
@@ -183,7 +183,11 @@ public:
 	bool getJiangDire(int mid);
 	std::list<Move> listMove(int mid);
 	std::vector<Move> listKillMove();
+	std::vector<Move> listDefendMove();
 	std::vector<Move> listAllMove();
+	static bool cmp(Move a, Move b);
+	bool isMoveContainJiang(std::vector<Move> mvlst);
+private: 
 	std::list<Move> listMoveBing(int mid);
 	std::list<Move> listMoveShi(int mid);
 	std::list<Move> listMovePao(int mid);
@@ -193,8 +197,6 @@ public:
 	void listMoveJu(int mid, int x, int y, int dx, int dy, std::list<Move>& lst);
 	std::list<Move> listMoveJiang(int mid);
 	std::list<Move> listMoveXiang(int mid);
-	static bool cmp(Move a, Move b);
-private: 
 	//栈用于撤销走法
 	std::stack<int> _x0, _y0, _revive, _id;
 	//记录棋盘上的点是哪个棋子

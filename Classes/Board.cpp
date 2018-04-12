@@ -1,6 +1,7 @@
 #include "Board.h"
 #include <fstream>
 #include <io.h>
+#include "SRule.h"
 
 CBoard::CBoard(Stone* s[], bool turn)
 {
@@ -83,15 +84,6 @@ void CBoard::reverseMove()
 	_turn = !_turn;
 }
 
-Move CBoard::makeRevMove(Move m)
-{
-	Move ret;
-	ret = m;
-	ret.x = _s[m.moveid]._x;
-	ret.y = _s[m.moveid]._y;
-	return ret;
-}
-
 std::string CBoard::getJumianStr()
 {
 	std::string ret = "";
@@ -160,25 +152,20 @@ bool CBoard::isGameOver()
 	return false;
 }
 
+//当前turn方是否被将
 bool CBoard::isOnCheck(bool turn)
 {
-	int Jiang = -1;
-	for (int i = 0; i < 32; i++)
+	int Jiang = 20, st = 0, ed = 16;
+	if (_s[0].getRed() == turn)
 	{
-		if (_s[i].getRed() == turn && _s[i].getType() == Stone::JIANG && _s[i].getDead() == false)
-		{
-			Jiang = i;
-			break;
-		}
+		Jiang = 4;
+		st = 16;
+		ed = 32;
 	}
-	int &x = _s[Jiang]._x;
-	int &y = _s[Jiang]._y;
-	for (int i = 0; i < 32; i++)
+	for (int i = st; i < ed; i++)
 	{
-		if (_s[i].getRed() != turn && _s[i].getDead() == false)
-		{
-			
-		}
+		if (SRule::canMove(i, Jiang, _s[i]._x, _s[i]._y, _s))
+			return true;
 	}
 	return false;
 }
@@ -236,39 +223,6 @@ Move CBoard::getNNMove()
 {
 	auto vet = get10NNMove();
 	return vet[0];
-	std::string str = toString();
-	std::string mov = "";
-	char txtBoard[] = "d:/txtboard.txt";
-	char tagBoard[] = "d:/tagboard.txt";
-	char txtMove[] = "d:/txtmove.txt";
-	char tagMove[] = "d:/tagmove.txt";
-	//删除文件
-	remove(tagMove);
-	remove(txtMove);
-	//写棋盘
-	std::ofstream out;
-	out.open(txtBoard, std::ios::trunc);
-	out << str;
-	out.close();
-	//写棋盘标识
-	std::ofstream tag;
-	tag.open(tagBoard, std::ios::trunc);
-	tag << "1";
-	tag.close();
-	int tmp = 0;
-	//输出标识是否存在
-	while (_access(tagMove, 0) == -1);
-	//读取内容
-	std::fstream in;
-	in.open(txtMove, std::ios::in);
-	in >> mov;
-	for (char i : mov)
-	{
-		tmp = tmp * 10 + (i - '0');
-	}
-	in.close();
-	setHas();
-	return intToMove(tmp);
 }
 
 std::vector<Move> CBoard::get10NNMove()
@@ -277,9 +231,9 @@ std::vector<Move> CBoard::get10NNMove()
 	std::string str = toString();
 	std::string mov = "";
 	char txtBoard[] = "d:/txtboard.txt";
-	char tagBoard[] = "d:/tagboard10.txt";
+	char tagBoard[] = "d:/tagboard.txt";
 	char txtMove[] = "d:/txtmove.txt";
-	char tagMove[] = "d:/tagmove10.txt";
+	char tagMove[] = "d:/tagmove.txt";
 	//删除文件
 	remove(tagMove);
 	remove(txtMove);
@@ -310,6 +264,23 @@ std::vector<Move> CBoard::get10NNMove()
 		ret.push_back(intToMove(tmp));
 	}
 	in.close();
+	return ret;
+}
+
+std::vector<double> CBoard::getNNMovePossi()
+{
+	char filename[] = "d:/possmove.txt";
+	std::vector<double> ret;
+	std::fstream in;
+	in.open(filename, std::ios::in);
+	double tmp = -1;
+	while (!in.eof())
+	{
+		in >> tmp;
+		if (tmp>0)
+			ret.push_back(tmp);
+		tmp = -1;
+	}
 	return ret;
 }
 
@@ -360,39 +331,46 @@ bool CBoard::cmp(Move a, Move b)
 	return a.killid>b.killid;
 }
 
-//列举所有的走法，杀子优先，弑君截断
+bool CBoard::isMoveContainJiang(std::vector<Move> mvlst)
+{
+	return false;
+}
+
 std::vector<Move> CBoard::listKillMove()
 {
-	std::vector<Move> ret, wang;
-	int st = 0, ed = 16;
-	if (_s[0].getRed() != _turn)
+	std::vector<Move> ret = listAllMove();
+	if (ret.size() == 1 && (ret[0].killid == 4 || ret[0].killid == 20)) return ret;
+	
+	std::vector<Move> retvec;
+	for (int i = 0; i < ret.size(); i++)
 	{
-		st = 16;
-		ed = 32;
+		moveStone(ret[i]);
+
+		if (isOnCheck(_turn))
+			retvec.push_back(ret[i]);
+
+		reverseMove();
 	}
-	for (int i = st; i < ed; i++)
+	return retvec;
+}
+
+std::vector<Move> CBoard::listDefendMove()
+{
+	std::vector<Move> ret = listAllMove();
+	if (ret.size() == 1 && (ret[0].killid == 4 || ret[0].killid == 20)) return ret;
+
+	std::vector<Move> retvec;
+	for (int i = 0; i < ret.size(); i++)
 	{
-		auto tmp = listMove(i);
-		for (auto m : tmp)
-		{
-			if (m.killid != -1)
-			{
-				if (m.killid == 4 || m.killid == 20)
-				{
-					wang.push_back(m);
-					return wang;
-				}
-				else
-					ret.push_back(m);
-			}
-			else
-			{
-				ret.push_back(m);
-			}
-		}
+		bool turn = _turn;
+		moveStone(ret[i]);
+
+		if (!isOnCheck(turn))
+			retvec.push_back(ret[i]);
+
+		reverseMove();
 	}
-	std::sort(ret.begin(), ret.end());
-	return ret;
+	return retvec;
 }
 
 //列举所有着法，主要为了蒙树搜索。
@@ -431,6 +409,7 @@ std::vector<Move> CBoard::listAllMove()
 		int j = rand() % ret.size();
 		std::swap(ret[i], ret[j]);
 	}
+	std::sort(ret.begin(), ret.end());
 	return ret;
 }
 

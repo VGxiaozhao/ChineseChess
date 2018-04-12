@@ -324,8 +324,11 @@ bool SRule::canMoveBing(int moveid, int x, int y, stChessman* _s)
 	{
 		return false;
 	}
-	//如果玩家的棋子是红棋 
-	if (moveid < 16)
+	int bossid = 4;
+	if (moveid >= 16)
+		bossid = 20;
+	//如果玩家的老大在下方
+	if (_s[bossid].getY() < 5)
 	{
 		//限制红色的兵不能后退 
 		if (y < yo)
