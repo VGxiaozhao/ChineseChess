@@ -181,29 +181,6 @@ int  CBrain::alphaBetaSearch(bool turn, int depth, int alpha, int beta)
 			return beta;
 		}
 	}
-	//for (int j = 0; j < 32; j++)
-	//{
-	//	int i = _xulie[j];
-	//	if (_board->_s[i].getRed() != turn || _board->_s[i].getDead() ) continue;
-	//	//list<Move> tmp = SRule::listMove(i, _board->_s);
-	//	auto tmp = _board->listMove(i);
-	//	for (auto m : tmp)
-	//	{
-	//		_board->moveStone(m);
-	//		int val = -alphaBetaSearch(!turn, depth - 1, -beta, -alpha);
-	//		_board->reverseMove();
-	//		if (val > alpha){
-	//			alpha = val;
-	//			if (depth == _depth)
-	//				_bestMove = m;
-	//		}
-	//		//if (alpha >= beta) break;
-	//		if (val >= beta)
-	//		{
-	//			return beta;
-	//		}
-	//	}
-	//}
 	auto lst = _board->listAllMove();
 	for (Move m : lst)
 	{

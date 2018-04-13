@@ -404,12 +404,27 @@ std::vector<Move> CBoard::listAllMove()
 			}
 		}
 	}
+	srand(time(NULL));
 	for (int i = 0; i < ret.size(); i++)
 	{
 		int j = rand() % ret.size();
 		std::swap(ret[i], ret[j]);
 	}
 	std::sort(ret.begin(), ret.end());
+	//以下为debug代码
+	bool flag = false;
+	for (int i = 0; i < ret.size(); i++)
+	{
+		if (flag&&ret[i].killid != -1)
+		{
+			log("shit happened");
+			break;
+		}
+		if (ret[i].killid == -1)
+		{
+			flag = true;
+		}
+	}
 	return ret;
 }
 
