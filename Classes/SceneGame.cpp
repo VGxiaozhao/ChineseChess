@@ -273,12 +273,6 @@ void SceneGame::moveStone(int moveId, int killId, int x, int y)
         return;
     }
     //走棋之前记录棋子的信息 
-    //第一个参数：需要移动的棋子的id 
-    //第二个参数：通过触摸点的位置判断触摸点上是否有棋子 
-    //第三个参数：棋子当前的位置的x坐标 
-    //第四个参数：棋子当前的位置的y坐标 
-    //第五个参数：棋子移动后的位置的x坐标 
-    //第六个参数：棋子移动后的位置的y坐标 
     Step* step = Step::create(moveId, killId, _s[moveId]->getX(), _s[moveId]->getY(), x, y);
     //将棋子的信息添加到数组中 
     _steps->addObject(step);
@@ -297,6 +291,18 @@ void SceneGame::moveStone(int moveId, int killId, int x, int y)
     _s[moveId]->setZOrder(_s[moveId]->getZOrder() + 1);
     //执行棋子移动的动作 
     _s[moveId]->runAction(seq);
+}
+
+void SceneGame::record()
+{
+	Ref* obj = nullptr;
+	CCARRAY_FOREACH(this->_steps, obj)
+	{
+		Step* step = (Step*)obj;
+		char s[100] = "";
+		sprintf(s, "%d%d%d%d", step->_xFrom, step->_yFrom, step->_xTo, step->_yTo);
+		log(s);
+	}
 }
 
 //将棋盘坐标转换成窗口坐标 
@@ -414,6 +420,7 @@ void SceneGame::moveComplete(Node* movestone, void* _killid)
     //切换移动的棋子的颜色 
     _redTurn = ! _redTurn;
 	//callAI();
+	record();
 	if (_redTurn != _redSide )
 	{
 		callAI();

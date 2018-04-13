@@ -89,6 +89,7 @@ public:
     //第一个参数：移动的棋子 
     //第二个参数：被杀掉的棋子 
     void moveStone(int moveId, int killId, int x, int y);
+	void record();
 	void moveStone(Move);
     //将棋盘的坐标转换成窗口的坐标 
     Point getStonePos(int x, int y);
