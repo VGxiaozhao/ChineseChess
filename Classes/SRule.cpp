@@ -31,43 +31,36 @@ bool SRule::canMove(int moveid, int killid, int x, int y, stChessman* _s)
 	//棋子的类型 
 	switch (s.getType())
 	{
-		//将的走棋规则 
 	case Stone::JIANG:
 	{
 		 return canMoveJiang(moveid, killid, x, y, _s);
 	}
 		break;
-		//士的走棋规则 
 	case Stone::SHI:
 	{
 		   return canMoveShi(moveid, x, y, _s);
 	}
 		break;
-		//相的走棋规则 
 	case Stone::XIANG:
 	{
 			 return canMoveXiang(moveid, x, y, _s);
 	}
 		break;
-		//车的走棋规则 
 	case Stone::JU:
 	{
 		   return canMoveJu(moveid, x, y, _s);
 	}
 		break;
-		//马的走棋规则 
 	case Stone::MA:
 	{
 		  return canMoveMa(moveid, x, y, _s);
 	}
 		break;
-		//炮的走棋规则 
 	case Stone::PAO:
 	{
 		 return canMovePao(moveid, killid, x, y, _s);
 	}
 		break;
-		//兵的走棋规则 
 	case Stone::BING:
 	{
 		return canMoveBing(moveid, x, y, _s);
@@ -80,7 +73,6 @@ bool SRule::canMove(int moveid, int killid, int x, int y, stChessman* _s)
 	return false;
 }
 
-//将的走棋规则 
 bool SRule::canMoveJiang(int moveid, int killid, int x, int y, stChessman* _s)
 {
 	if (killid > -1){
@@ -88,7 +80,6 @@ bool SRule::canMoveJiang(int moveid, int killid, int x, int y, stChessman* _s)
 		//将的走棋规则：
 		//1、一次走一格 
 		//2、不能出九宫格 
-
 		//将的对杀 
 		if (skill.getType() == Stone::JIANG)
 		{
@@ -106,8 +97,6 @@ bool SRule::canMoveJiang(int moveid, int killid, int x, int y, stChessman* _s)
 	int yoff = abs(yo - y);
 	int d = xoff * 10 + yoff;
 	//走将的时候有两种情况 
-	//xoff=1, yoff=0：将向左或向右 
-	//xoff=0, yoff=1：将向前或向后 
 	if (d != 1 && d != 10)
 	{
 		return false;
@@ -133,8 +122,6 @@ bool SRule::canMoveShi(int moveid, int x, int y, stChessman* _s)
 	//1、一次走一格 
 	//2、不能出九宫格 
 	//3、斜着走 
-	// 
-	//通过棋子的ID得到棋子 
 	stChessman s = _s[moveid];
 	//获得相走棋前的位置 
 	int xo = s.getX();
@@ -166,14 +153,11 @@ bool SRule::canMoveShi(int moveid, int x, int y, stChessman* _s)
 	return bret;
 }
 
-//相的走棋规则 
 bool SRule::canMoveXiang(int moveid, int x, int y, stChessman* _s)
 {
 	//相的走棋规则： 
 	//每走一次x移动2格,y移动2格 
 	//不能过河 
-	// 
-	//通过棋子的ID得到棋子 
 	stChessman s = _s[moveid];
 	//获得相走棋前的位置 
 	int xo = s.getX();
@@ -216,12 +200,9 @@ bool SRule::canMoveXiang(int moveid, int x, int y, stChessman* _s)
 	return bret;
 }
 
-//车的走棋规则 
 bool SRule::canMoveJu(int moveid, int x, int y, stChessman* _s)
 {
-	//通过棋子的ID得到棋子 
 	stChessman s = _s[moveid];
-	//获得车走棋前的位置 
 	int xo = s.getX();
 	int yo = s.getY();
 	//当两点之间有棋子的时候车不能走 
@@ -232,16 +213,11 @@ bool SRule::canMoveJu(int moveid, int x, int y, stChessman* _s)
 	return true;
 }
 
-//马的走棋规则 
 bool SRule::canMoveMa(int moveid, int x, int y, stChessman* _s)
 {
-	//通过棋子的ID得到棋子 
 	stChessman s = _s[moveid];
-	//获得马走棋前的位置 
 	int xo = s.getX();
 	int yo = s.getY();
-	//CCLog("xo=%d", xo);
-	//CCLog("yo=%d", yo);
 	//获得马走的格数 
 	//(x,y)表示马走到的位置 
 	//马有两种情况：
@@ -249,10 +225,7 @@ bool SRule::canMoveMa(int moveid, int x, int y, stChessman* _s)
 	//第二种情况：马先向左或向右走1不，再向前或向后走2步 
 	int xoff = abs(xo - x);
 	int yoff = abs(yo - y);
-	//CCLog("x=%d", x);
-	//CCLog("y=%d", y);
 	int d = xoff * 10 + yoff;
-	//CCLog("d=%d", d);
 	if (d != 12 && d != 21)
 	{
 		return false;
@@ -268,8 +241,6 @@ bool SRule::canMoveMa(int moveid, int x, int y, stChessman* _s)
 		xm = (xo + x) / 2;//绑脚点的x坐标为走棋前马的x坐标和走棋后马的x坐标的中点坐标 
 		ym = yo;//绑脚点的y坐标为走棋前马的y坐标 
 	}
-	//CCLog("xm=%d", xm); 
-	//CCLog("ym=%d", ym); 
 	//当绑脚点有棋子时,不能走 
 	if (getStone(xm, ym, _s) != -1)
 	{
@@ -278,12 +249,9 @@ bool SRule::canMoveMa(int moveid, int x, int y, stChessman* _s)
 	return true;
 }
 
-//炮的走棋规则 
 bool SRule::canMovePao(int moveid, int killid, int x, int y, stChessman* _s)
 {
-	//通过棋子的ID得到棋子 
 	stChessman s = _s[moveid];
-	//获得炮走棋前的位置 
 	int xo = s.getX();
 	int yo = s.getY();
 	//当触摸点上有一个棋子 
@@ -300,16 +268,13 @@ bool SRule::canMovePao(int moveid, int killid, int x, int y, stChessman* _s)
 	return false;
 }
 
-//兵的走棋规则 
 bool SRule::canMoveBing(int moveid, int x, int y, stChessman* _s)
 {
 	//兵的走棋规则： 
 	//1、一次走一格 
 	//2、前进一格后不能后退 
 	//3、过河后才可以左右移动 
-	//通过棋子的ID得到棋子 
 	stChessman s = _s[moveid];
-	//获得将当前的位置 
 	int xo = s.getX();
 	int yo = s.getY();
 	//获得兵走的格数 
@@ -438,28 +403,22 @@ list<Move> SRule::listMove(int mid, stChessman* _s)
 	{
 		return ret;
 	}
-	//棋子的类型 
 	switch (s.getType())
 	{
-		//将的走棋规则 
 		case Stone::BING:
 			ret = listMoveBing(mid, _s);
 		break;
-		//士的走棋规则 
 		case Stone::SHI:
 			ret = listMoveShi(mid, _s);
 		break;
-		//相的走棋规则 
 		case Stone::XIANG:
 			ret = listMoveXiang(mid, _s);
 		break;
-		//车的走棋规则 
 		case Stone::JIANG:
 		case Stone::JU:
 		case Stone::PAO:
 			ret = listMovePao(mid, _s);
 		break;
-		//马的走棋规则 
 		case Stone::MA:
 			ret = listMoveMa(mid, _s);
 		break;
@@ -470,7 +429,6 @@ list<Move> SRule::listMove(int mid, stChessman* _s)
 	for (auto m : ret){
 		if (m.killid == -1)
 		{
-			//if (isValidMove(m, _s))
 				xret.push_back(m);
 		}
 		else

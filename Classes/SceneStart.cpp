@@ -16,20 +16,15 @@ bool SceneStart::init()
     {
         return false;
     }
-    //
     auto winSize = Director::getInstance()->getVisibleSize();
-    //
     auto bkr = Sprite::create("bkg2.png");
     addChild(bkr);
     auto bkb = CCSprite::create("bkg1.png");
     addChild(bkb);
-    //
     bkr->setPosition(ccp(winSize.width / 2 - 100, winSize.height / 2));
     bkb->setPosition(ccp(winSize.width / 2 + 100, winSize.height / 2));
-    //
     _red = bkr;
     _black = bkb;
-    //
     auto listener = EventListenerTouchOneByOne::create();
     listener->onTouchBegan = [this](Touch *t,Event *e){
         auto winSize = Director::getInstance()->getVisibleSize();

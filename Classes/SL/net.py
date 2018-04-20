@@ -5,7 +5,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 import tensorflow as tf
 import numpy as np
 sess = tf.InteractiveSession()
-data_path = "D:/SL/data"
+data_path = "./data"
 
 def weight_variable(shape):
 	initial = tf.truncated_normal(shape, stddev=0.1)

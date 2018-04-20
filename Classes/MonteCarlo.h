@@ -21,7 +21,7 @@ private:
 			_board = board;
 			//_move = _board.listAllMove();
 			_move = _board.get10NNMove();
-			_poss = _board.getNNMovePossi();
+			//_poss = _board.getNNMovePossi();
 			_all = _q = _n = 0;
 			_father = u;
 			//_move.clear();
@@ -36,14 +36,15 @@ public:
 	MonteCarlo(CBoard s, bool turn);
 	~MonteCarlo();
 public:
+	//返回主要的着法
 	Move UCTSearch();
+protected:
 	int treePolicy(int);
 	int bestChild(int v);
 	int bestChildUsePoss(int u);
 	int defaultPolicy(CBoard v);
 	void backup(int v, int d);
 	void show(Move, int);
-protected:
 	void addEdge(int u, int v);
 	std::vector<MonteCarlo::Node> _arrNode;
 	double _c;

@@ -21,16 +21,7 @@
     <ClCompile Include="..\Classes\HelloWorldScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\SceneGame.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\SceneStart.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Stone.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\SRule.cpp">
+    <ClCompile Include="..\Classes\Board.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Brain.cpp">
@@ -39,10 +30,19 @@
     <ClCompile Include="..\Classes\HashMap.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Board.cpp">
+    <ClCompile Include="..\Classes\MonteCarlo.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\MonteCarlo.cpp">
+    <ClCompile Include="..\Classes\SceneGame.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\SceneStart.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\SRule.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Stone.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -59,16 +59,7 @@
     <ClInclude Include="..\Classes\AppMacros.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\SceneGame.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\SceneStart.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Stone.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\SRule.h">
+    <ClInclude Include="..\Classes\Board.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Brain.h">
@@ -77,10 +68,19 @@
     <ClInclude Include="..\Classes\HashMap.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Board.h">
+    <ClInclude Include="..\Classes\MonteCarlo.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\MonteCarlo.h">
+    <ClInclude Include="..\Classes\SceneGame.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SceneStart.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SRule.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Stone.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

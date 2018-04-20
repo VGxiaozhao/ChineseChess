@@ -39,8 +39,8 @@ Move MonteCarlo::UCTSearch()
 		int d = defaultPolicy(_arrNode[v]._board);
 		backup(v, d);
 	}
-	//int v = bestChild(0);
-	int v = bestChildUsePoss(0);
+	int v = bestChild(0);
+	//int v = bestChildUsePoss(0);
 	for (int i = _head[0], j = _arrNode[0]._all-1; i != -1; i = _edge[i].next, j--)
 	{
 		if (_edge[i].v == v)
@@ -58,8 +58,8 @@ int MonteCarlo::treePolicy(int u)
 
 	while (u != -1 && _arrNode[u]._n!=0 && _arrNode[u]._all==_arrNode[u]._move.size())
 	{
-		//u = bestChild(u);
-		u = bestChildUsePoss(u);
+		u = bestChild(u);
+		//u = bestChildUsePoss(u);
 	}
 	if (u == -1) return f;
 

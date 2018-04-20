@@ -89,25 +89,17 @@ public:
     //第一个参数：移动的棋子 
     //第二个参数：被杀掉的棋子 
     void moveStone(int moveId, int killId, int x, int y);
+	//记录棋谱
 	void record();
 	void moveStone(Move);
     //将棋盘的坐标转换成窗口的坐标 
     Point getStonePos(int x, int y);
-    //计算(xo,yo)和(x,y)之间的棋子数 
-    //如果棋子数为-1,表示(xo,yo)和(x,y)不在一条直线上 
-    int getStoneCount(int xo, int yo, int x, int y);
     //新局 
     void New(Object*);
     //悔棋 
     void Back(Object*);
     //开始游戏 
     void Start(Object*);
-    //暂停游戏 
-    void Pause(Object*);
-    //设置游戏难度 
-    void Difficulty(Object*);
-    //播放背景音乐 
-    void Voice(Object*);
     void moveComplete(Node*, void*);
 	//测试人工智障下棋
 	void callAI();

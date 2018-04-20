@@ -140,17 +140,13 @@ Start(NULL);
             visible = false;
             New(obj);
         }
-        int x, y;//保存触摸点的棋盘坐标 
-        //通过触摸点的窗口坐标获取棋盘的x坐标和y坐标 
+        int x, y;
         if(!getClickPos(ptInWin, x, y))
         {
             return false;
         }
         //通过触摸点在棋盘中的坐标获取选中的棋子的id 
         int clickid = getStone(x, y);
-        //当触摸点的位置上有棋子的时候,clickid为选中的棋子的id,表示玩家在选棋 
-        //当触摸点的位置上没有棋子的时候,clickid为-1,表示玩家在走棋 
-
         //-1 == _selectid表示当前没有选中棋子 
         if(-1 == _selectid)
         {
@@ -158,14 +154,6 @@ Start(NULL);
         }
         else
         {
-            //移动棋子 
-            //第一个参数：移动的棋子的id 
-            //第二个参数：通过触摸点的位置判断触摸点上是否有棋子 
-            //第三个参数：触摸点的x坐标 
-            //第四个参数：触摸点的y坐标 
-            //moveStone执行了两个步骤选棋和走棋 
-            //选棋子：当_selectid == clickid时，表示选定了id为_selectid的棋子 
-            //走棋子：当selectid != clickid时， 表示将id为_selectid的棋子移动到(x,y)所在的位置上 
             moveStone(_selectid, clickid, x, y);
         }
 
@@ -181,8 +169,6 @@ Start(NULL);
 }
 
 //得到鼠标点击在棋盘上的坐标点 
-//当鼠标点击的位置在棋盘外返回false 
-//通过窗口坐标获得棋盘坐标 
 bool SceneGame::getClickPos(Point ptInWin, int &x, int &y)
 {
     for(x=0; x<=8; x++)
@@ -191,7 +177,6 @@ bool SceneGame::getClickPos(Point ptInWin, int &x, int &y)
         {
             //计算棋盘上的格子在窗口上的位置 
             Point ptInPlate = getStonePos(x, y);
-            // CCLog("ptInPlate.x=%lf   ptInPlate.y=%lf", ptInPlate.x,  ptInPlate.y);
             //寻找与鼠标点击的位置距离小于棋子的半径的格子 
             //如果找到了,return true,否则返回 return false 
             if(ptInWin.getDistance(ptInPlate) < _d / 2)
@@ -243,16 +228,9 @@ void SceneGame::setSelectId(int id)
     _selectSprite->setPosition(_s[_selectid]->getPosition());
 }
 
-//移动棋子 
-//第一个参数：移动的棋子的id 
-//第二个参数：通过触摸点的位置判断触摸点上是否有棋子 
-//第三个参数：触摸点的x坐标 
-//第四个参数：触摸点的y坐标 
+
 void SceneGame::moveStone(int moveId, int killId, int x, int y)
 {
-    //killId != -1表示触摸点的位置上有一个棋子 
-    //_s[moveId]->getRed() == _s[killId]->getRed()表示触摸点上 
-    //的棋子和走棋的棋子的颜色相同 
     if(killId != -1 && _s[moveId]->getRed() == _s[killId]->getRed())
     {
         //更换选择框 
@@ -279,8 +257,6 @@ void SceneGame::moveStone(int moveId, int killId, int x, int y)
     //设置棋子的坐标(移动棋子) 
     _s[moveId]->setX(x);
     _s[moveId]->setY(y);
-    //_s[moveId]->setPosition(getStonePos(x,y));
-    //SetRealPos(_s[moveId]);
     //设置移动棋子时的动作 
     auto move = MoveTo::create(.2f, getStonePos(x, y));
     //动作回调 
@@ -318,12 +294,10 @@ CCPoint SceneGame::getStonePos(int x, int y)
 void SceneGame::Back(Object*)
 {
     //当数组中的元素个数为0时 
-    //没走棋 
     if( 0 == _steps->count() )
     {
         return;
     }
-    //获取数组中的最后一个元素 
     //获取走棋时的最后一步棋子的信息 
     Step* step = (Step*)_steps->lastObject();
     //恢复棋子的信息 
@@ -420,12 +394,12 @@ void SceneGame::moveComplete(Node* movestone, void* _killid)
     //切换移动的棋子的颜色 
     _redTurn = ! _redTurn;
 	//callAI();
-	record();
+	//record();
 	if (_redTurn != _redSide )
 	{
-		callAI();
-		/*std::thread t1(&SceneGame::callAI, this);
-		t1.detach();*/
+		//callAI();
+		std::thread t1(&SceneGame::callAI, this);
+		t1.detach();
 	}
 }
 

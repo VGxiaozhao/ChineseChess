@@ -169,23 +169,36 @@ public:
 	int evaluate(bool);
 	int getScore(bool);
 	int initEvaluate();
+	//游戏结束
 	bool isGameOver();
+	//设置棋盘表，标记某个格子是否有棋子，对应他的id
 	void setHas();
+	//是否被将
 	bool isOnCheck(bool turn);
 	std::string  toString();
+	//获得神经网络推荐着法
 	Move getNNMove();
 	std::vector<Move> get10NNMove();
 	std::vector<double> getNNMovePossi();
+	//将神经网络推荐着法返回的数字转为Move类型
 	Move intToMove(int tmp);
 public:
+	//对应两个id是否敌人
 	bool isEnemy(int a, int b);
+	//是否越界，过河
 	bool isGoOut(int mid, int x, int y);
+	//获得自己老大的位置是不是在y轴小的方向
 	bool getJiangDire(int mid);
+	//列举所有着法（无排序）
 	std::list<Move> listMove(int mid);
+	//单列吃子着法
 	std::vector<Move> listKillMove();
+	//列举防止被杀将着法（杀手启发用）
 	std::vector<Move> listDefendMove();
+	//列举所有着法（有排序）
 	std::vector<Move> listAllMove();
 	static bool cmp(Move a, Move b);
+	//是否有将军棋
 	bool isMoveContainJiang(std::vector<Move> mvlst);
 private: 
 	std::list<Move> listMoveBing(int mid);
