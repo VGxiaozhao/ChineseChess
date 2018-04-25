@@ -39,3 +39,9 @@ proj.win32/.vs/chess/v14/.suo
 *.user
 *.sln
 proj.win32/chess.sln
+*.sln
+*.vcxproj
+proj.win32/.vs/chess/v14/.suo
+*.vcxproj
+*.sln
+proj.win32/.vs/chess/v14/.suo
