@@ -6,6 +6,8 @@
 #include <vector>
 #include <string.h>
 
+
+
 static const int position_score[7][10][9] = {
 	{//Bing
 		{ 9,  9,  9, 11, 13, 11,  9,  9,  9 },
@@ -153,6 +155,12 @@ struct stChessman
 ///棋盘类，具有模拟移动棋子，和生成着法的功能
 class CBoard
 {
+public:
+	//用于交互python的相关文件
+	static char* TXTBOARD;
+	static char* TAGBOARD;
+	static char* TXTMOVE;
+	static char* TAGMOVE;
 public:
 	CBoard(Stone* s[], bool);
 	CBoard(const CBoard& C);

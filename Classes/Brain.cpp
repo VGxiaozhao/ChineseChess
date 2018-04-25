@@ -65,7 +65,7 @@ Move CBrain::think()
 	//调试阶段修改这里的参数
 	//杀手启发
 	//if (!findKillerMove(_bestMove, _turn))		
-		alphaBetaSearch(3);
+	//	alphaBetaSearch(3);
 	//时间阈值设定型
 	//alphaBetaSearchByTime(4);
 	//着法通过神经网络生成型
@@ -74,7 +74,7 @@ Move CBrain::think()
 	/*MonteCarlo mc(*_board, _turn);
 	_bestMove = mc.UCTSearch();*/
 	//监督学习
-	//_bestMove = _board->getNNMove();
+	_bestMove = _board->getNNMove();
 	return _bestMove;
 }
 

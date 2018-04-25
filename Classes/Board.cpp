@@ -23,6 +23,10 @@ CBoard::CBoard(const CBoard& cmp)
 
 CBoard::~CBoard()
 {
+	remove(TAGMOVE);
+	remove(TXTMOVE);
+	remove(TAGBOARD);
+	remove(TXTBOARD);
 }
 
 CBoard& CBoard::operator=(const CBoard& cmp)
@@ -225,35 +229,36 @@ Move CBoard::getNNMove()
 	return vet[0];
 }
 
+char* CBoard::TXTBOARD = "d:/txtboard.txt";
+char* CBoard::TAGBOARD = "d:/tagboard.txt";
+char* CBoard::TXTMOVE = "d:/txtmove.txt";
+char* CBoard::TAGMOVE = "d:/tagmove.txt";
+
 std::vector<Move> CBoard::get10NNMove()
 {
 	std::vector<Move> ret;
 	std::string str = toString();
 	std::string mov = "";
-	char txtBoard[] = "d:/txtboard.txt";
-	char tagBoard[] = "d:/tagboard.txt";
-	char txtMove[] = "d:/txtmove.txt";
-	char tagMove[] = "d:/tagmove.txt";
 	//删除文件
-	remove(tagMove);
-	remove(txtMove);
+	remove(TAGMOVE);
+	remove(TXTMOVE);
 	//写棋盘
 	std::ofstream out;
-	out.open(txtBoard, std::ios::trunc);
+	out.open(TXTBOARD, std::ios::trunc);
 	out << str;
 	out.close();
 	//写棋盘标识
 	std::ofstream tag;
-	tag.open(tagBoard, std::ios::trunc);
+	tag.open(TAGBOARD, std::ios::trunc);
 	tag << "1";
 	tag.close();
 	int tmp = 0;
 	//输出标识是否存在
-	while (_access(tagMove, 0) == -1);
+	while (_access(TAGMOVE, 0) == -1);
 	//读取内容
 	setHas();
 	std::fstream in;
-	in.open(txtMove, std::ios::in);
+	in.open(TXTMOVE, std::ios::in);
 	while (std::getline(in, mov))
 	{
 		tmp = 0;

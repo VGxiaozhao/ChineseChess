@@ -36,3 +36,4 @@ proj.win32/.vs/chess/v14/.suo
 *.user
 *.sln
 proj.win32/chess.sln
+proj.win32/build-cfg.json
