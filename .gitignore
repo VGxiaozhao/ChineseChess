@@ -26,9 +26,6 @@ Classes/testNN.py
 Classes/old/
 proj.win32/chess.VC.VC.opendb
 proj.win32/chess.VC.db
-ChineseChess.cfg
-ChineseChess.udf
-ChineseChess.ccs
 *.data-00000-of-00001
 proj.win32/ChineseChess.VC.VC.opendb
 proj.win32/ChineseChess.VC.db
@@ -39,9 +36,3 @@ proj.win32/.vs/chess/v14/.suo
 *.user
 *.sln
 proj.win32/chess.sln
-*.sln
-*.vcxproj
-proj.win32/.vs/chess/v14/.suo
-*.vcxproj
-*.sln
-proj.win32/.vs/chess/v14/.suo
